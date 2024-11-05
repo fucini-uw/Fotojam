@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Fotojam</string>
+    <string name="login_button_text">Continue</string>
+    <string name="login_error_text">Account not found!</string>
+    <string name="username_hint_text">Username</string>
+    <string name="password_hint_text">Password</string>
+    <string name="create_jam_text">Create a new Fotojam</string>
+    <string name="join_jam_text">Join an existing Fotojam</string>
+    <string name="logout">Logout</string>
+    <string name="view_profile">View Profile</string>
+</resources>
