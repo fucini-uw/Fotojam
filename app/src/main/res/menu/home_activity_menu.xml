@@ -5,13 +5,12 @@
     <item
         android:id="@+id/action_view_profile"
         android:title="@string/view_profile"
-        android:icon="@android:drawable/ic_delete"
+        android:icon="@drawable/profile_icon"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_logout"
         android:title="@string/logout"
-        android:icon="@android:drawable/ic_lock_idle_charging"
         app:showAsAction="never" />
 
 </menu>

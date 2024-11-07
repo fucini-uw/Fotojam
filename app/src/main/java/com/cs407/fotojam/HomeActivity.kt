@@ -3,18 +3,21 @@ package com.cs407.fotojam
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class HomeActivity : AppCompatActivity() {
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.home_activity_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.home_activity_menu, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
@@ -42,6 +45,9 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
+        val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
         val createJamButton: Button = findViewById(R.id.createJamButton)
         createJamButton.setOnClickListener {
             val intent = Intent(applicationContext, CreateJamActivity::class.java)
@@ -51,6 +57,12 @@ class HomeActivity : AppCompatActivity() {
         val joinJamButton: Button = findViewById(R.id.joinJamButton)
         joinJamButton.setOnClickListener {
             val intent = Intent(applicationContext, JoinJamActivity::class.java)
+            startActivity(intent)
+        }
+
+        val jamDemoButton: Button = findViewById(R.id.jamDemoButton)
+        jamDemoButton.setOnClickListener {
+            val intent = Intent(applicationContext, JamActivity::class.java)
             startActivity(intent)
         }
     }

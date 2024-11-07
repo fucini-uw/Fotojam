@@ -20,4 +20,5 @@
     <string name="join_existing_jam_button">Join</string>
     <string name="join_random_jam_label">-or-</string>
     <string name="join_random_jam_button">Join a Random Jam!</string>
+    <string name="demo_jam_text">(Demo) Active Jam Activity</string>
 </resources>
