@@ -21,4 +21,7 @@
     <string name="join_random_jam_label">-or-</string>
     <string name="join_random_jam_button">Join a Random Jam!</string>
     <string name="demo_jam_text">(Demo) Active Jam Activity</string>
+    <string name="create_account">Create An Account</string>
+    <string name="back">&lt;</string>
+    <string name="verify_password">Verify Password</string>
 </resources>

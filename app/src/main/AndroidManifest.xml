@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Fotojam"
         tools:targetApi="31">
         <activity
+            android:name=".SignupActivity"
+            android:exported="false" />
+        <activity
             android:name=".JamActivity"
             android:exported="false" />
         <activity
