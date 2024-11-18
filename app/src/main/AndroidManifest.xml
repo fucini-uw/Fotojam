@@ -24,6 +24,8 @@
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
+        <activity android:name=".RatingActivity" />
+        <activity android:name=".FullscreenImageActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
