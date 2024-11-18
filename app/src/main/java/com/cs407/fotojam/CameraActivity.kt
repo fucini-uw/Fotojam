@@ -1,7 +1,7 @@
 package com.cs407.fotojam
 
-
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class MainActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity() {
 
     private var photoFile: File? = null
     private lateinit var photoImageView: ImageView
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_camera)
 
         photoImageView = findViewById(R.id.photo)
         saveButton = findViewById(R.id.save_button)
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         // Create a content URI to grant camera app write permission to photoFile
         val photoUri = FileProvider.getUriForFile(
-            this, "com.cs407.photoexpress.fileprovider", photoFile!!)
+            this, "com.cs407.fotojam.fileprovider", photoFile!!)
 
         // Start camera app
         takePicture.launch(photoUri)
@@ -170,6 +170,10 @@ class MainActivity : AppCompatActivity() {
                 saveButton.isEnabled = true
             }
         }
+
+        // navigate back to jam activity
+        val intent = Intent(applicationContext, JamActivity::class.java)
+        startActivity(intent)
     }
 
     private suspend fun saveAlteredPhoto(photoFile: File, filterMultColor: Int,
@@ -198,7 +202,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Insert a new row into the MediaStore
-        val resolver = this@MainActivity.applicationContext.contentResolver
+        val resolver = this@CameraActivity.applicationContext.contentResolver
         val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageValues)
 
         // Save bitmap as JPEG
