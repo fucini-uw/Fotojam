@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_weight="2">
+
+        <ImageView
+            android:id="@+id/itemImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="Image for rating" />
+
+        <Button
+            android:id="@+id/itemFullscreenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fullscreen"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="8dp"
+            android:background="@android:color/black"
+            android:textColor="@android:color/white"
+            android:padding="4dp" />
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical">
+
+        <RatingBar
+            android:id="@+id/itemRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1.0"
+            android:scaleX="0.75"
+            android:scaleY="0.75" />
+
+    </LinearLayout>
+</LinearLayout>
+
+
