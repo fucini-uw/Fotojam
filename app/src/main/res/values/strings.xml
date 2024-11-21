@@ -21,4 +21,10 @@
     <string name="join_random_jam_label">-or-</string>
     <string name="join_random_jam_button">Join a Random Jam!</string>
     <string name="demo_jam_text">(Demo) Active Jam Activity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="login_screen">LoginScreen</string>
+    <string name="home_screen">HomeScreen</string>
 </resources>
