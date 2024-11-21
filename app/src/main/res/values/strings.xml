@@ -29,4 +29,5 @@
     <string name="photo_desc">Photo from camera</string>
     <string name="photo_saved">Photo saved.</string>
     <string name="photo_not_saved">Problem saving the photo.</string>
+    <string name="demo_rating">(Demo) Picture Rating Activity</string>
 </resources>

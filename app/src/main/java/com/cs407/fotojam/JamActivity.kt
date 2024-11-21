@@ -24,5 +24,10 @@ class JamActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, CameraActivity::class.java)
             startActivity(intent)
         }
+        val ratingDemoButton: Button = findViewById(R.id.ratingButton)
+        ratingDemoButton.setOnClickListener {
+            val intent = Intent(applicationContext, RatingActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
