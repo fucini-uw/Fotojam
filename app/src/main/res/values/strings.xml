@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Fotojam</string>
-    <string name="login_button_text">Continue</string>
+    <string name="login_button_text">Log In</string>
     <string name="login_error_text">Account not found!</string>
     <string name="username_hint_text">Username</string>
     <string name="password_hint_text">Password</string>
@@ -22,7 +22,7 @@
     <string name="join_random_jam_button">Join a Random Jam!</string>
     <string name="demo_jam_text">(Demo) Active Jam Activity</string>
     <string name="create_account">Create An Account</string>
-    <string name="back">&lt;</string>
+    <string name="back">Back to Login</string>
     <string name="verify_password">Verify Password</string>
     <string name="take_photo">Take Photo</string>
     <string name="save">Save</string>
@@ -36,4 +36,13 @@
 
     <string name="login_screen">LoginScreen</string>
     <string name="home_screen">HomeScreen</string>
+    <string name="create_account_text">Create Account</string>
+    <string name="account_creation_error">Could not create account!</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="create_account_title">Create a new Account</string>
+    <string name="home_page_title_text">Welcome!</string>
+    <string name="home_page_subtitle_text">Your currently joined Fotojams:</string>
+    <string name="fotojam_name_placeholder">FotoJam Name</string>
+    <string name="fotojam_description_placeholder">Could not load information</string>
+    <string name="view_fotojam_text">View</string>
 </resources>

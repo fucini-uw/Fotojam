@@ -2,7 +2,6 @@ package com.cs407.fotojam
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,8 +9,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 
 class HomeFragment(
     private val injectedUserViewModel: UserViewModel? = null
@@ -50,7 +56,7 @@ class HomeFragment(
                     }
                     R.id.action_logout -> {
                         userViewModel.setUser(UserState())
-                        // TODO: return to login activity
+                        findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
                         true
                     }
                     else -> false
@@ -58,8 +64,15 @@ class HomeFragment(
             }
         }, viewLifecycleOwner)
 
-        //val toolbar: Toolbar = view.findViewById<Toolbar>(R.id.toolbar)
-        //setSupportActionBar(toolbar)
+        val toolbar: Toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        //setSupportActionToolbar(toolbar)
+        (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
+        val username = userViewModel.userState.value.name
+        (activity as AppCompatActivity?)?.supportActionBar?.title = "Welcome, " + username + "!"
+
+        //val welcomeText: TextView = view.findViewById<TextView>(R.id.WelcomeText)
+        //welcomeText.text = "Welcome, " + username + "!"
+
 
         val createJamButton: Button = view.findViewById(R.id.createJamButton)
         createJamButton.setOnClickListener {
@@ -73,10 +86,23 @@ class HomeFragment(
             startActivity(intent)
         }
 
-        val jamDemoButton: Button = view.findViewById(R.id.jamDemoButton)
-        jamDemoButton.setOnClickListener {
-            val intent = Intent(requireContext(), JamActivity::class.java)
-            startActivity(intent)
-        }
+        // Set up the recyclerview
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+
+        val jamInfoList = listOf(
+            "Title 1",
+            "Title 2",
+            "Title 3"
+        )
+
+        // set up RecyclerView with adapter
+        val adapter = FotojamListAdapter(jamInfoList)
+        //recyclerView.layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(
+            activity
+        )
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        recyclerView.setLayoutManager(layoutManager)
+        recyclerView.adapter = adapter
     }
 }
