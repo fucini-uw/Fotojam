@@ -29,5 +29,11 @@ class JamActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, RatingActivity::class.java)
             startActivity(intent)
         }
+
+        val resultsDemoButton: Button = findViewById(R.id.resultsButton)
+        resultsDemoButton.setOnClickListener {
+            val intent = Intent(applicationContext, ResultsActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
