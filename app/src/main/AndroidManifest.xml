@@ -36,6 +36,12 @@
             android:name=".CreateJamActivity"
             android:exported="false" />
         <activity
+            android:name=".ResultsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GalleryActivity"
+            android:exported="false" />
+        <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <activity android:name=".RatingActivity" />
