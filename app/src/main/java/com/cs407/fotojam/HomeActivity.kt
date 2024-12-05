@@ -12,7 +12,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity(
+    private val injectedUserViewModel: UserViewModel? = null
+) : AppCompatActivity() {
+
+    private lateinit var userViewModel: UserViewModel
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater: MenuInflater = menuInflater
@@ -27,7 +31,7 @@ class HomeActivity : AppCompatActivity() {
                 true
             }
             R.id.action_logout -> {
-                //userViewModel.setUser(UserState())
+                userViewModel.setUser(UserState())
                 // TODO: return to login activity
                 true
             }
@@ -37,13 +41,13 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_home)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+            enableEdgeToEdge()
+            setContentView(R.layout.activity_home)
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                insets
+            }
 
         val toolbar: Toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
