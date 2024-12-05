@@ -1,6 +1,7 @@
 package com.cs407.fotojam
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.RatingBar
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class PictureRatingAdapter(
-    private val pictures: List<Int>, // replace with image data type late
+    private val pictures: List<String>, // List of image URLs
     private val onRatingChanged: (position: Int, rating: Float) -> Unit
 ) : RecyclerView.Adapter<PictureRatingAdapter.PictureViewHolder>() {
 
@@ -29,7 +31,12 @@ class PictureRatingAdapter(
     override fun onBindViewHolder(holder: PictureViewHolder, position: Int) {
         val picture = pictures[position]
 
-        holder.imageView.setImageResource(picture) // adjust for data source
+        // Load image from URL using Glide
+        Glide.with(holder.itemView.context)
+            .load(picture)
+            .into(holder.imageView)
+        Log.e("PictureRatingAdapter:", "Picture: $picture")
+
         holder.ratingBar.rating = 0f
         holder.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
             onRatingChanged(position, rating)
@@ -38,10 +45,11 @@ class PictureRatingAdapter(
         holder.fullscreenButton.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, FullscreenImageActivity::class.java)
-            intent.putExtra("imageResource", picture)
+            intent.putExtra("imageUrl", picture)
             context.startActivity(intent)
         }
     }
 
     override fun getItemCount(): Int = pictures.size
 }
+

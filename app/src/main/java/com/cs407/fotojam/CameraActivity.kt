@@ -32,6 +32,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
+
 class CameraActivity : AppCompatActivity() {
 
     private var photoFile: File? = null
@@ -161,59 +166,63 @@ class CameraActivity : AppCompatActivity() {
 
             // Save image in background thread
             CoroutineScope(Dispatchers.Main).launch {
-                saveAlteredPhoto(photoFile!!, multColor, addColor)
+                val success = savePhotoToFirebase(photoFile!!, multColor, addColor)
 
-                // Show message
-                Toast.makeText(applicationContext, R.string.photo_saved, Toast.LENGTH_LONG).show()
+                if (success) {
+                    // Show success message
+                    Toast.makeText(applicationContext, R.string.photo_saved, Toast.LENGTH_LONG).show()
+                } else {
+                    // Show error message
+                    Toast.makeText(applicationContext, R.string.photo_not_saved, Toast.LENGTH_LONG).show()
+                }
 
                 // Allow Save button to be clicked again
                 saveButton.isEnabled = true
+
+                // Navigate back to Jam activity
+                val intent = Intent(applicationContext, JamActivity::class.java)
+                startActivity(intent)
             }
         }
-
-        // navigate back to jam activity
-        val intent = Intent(applicationContext, JamActivity::class.java)
-        startActivity(intent)
     }
 
-    private suspend fun saveAlteredPhoto(photoFile: File, filterMultColor: Int,
-                                         filterAddColor: Int) = withContext(Dispatchers.IO) {
-        // Read original image
+    private suspend fun savePhotoToFirebase(
+        photoFile: File,
+        filterMultColor: Int,
+        filterAddColor: Int
+    ): Boolean = withContext(Dispatchers.IO) {
+
+        // Read and alter the original image
         val origBitmap = BitmapFactory.decodeFile(photoFile.absolutePath, null)
 
-        // Create a new origBitmap with the same dimensions as the original
-        val alteredBitmap = Bitmap.createBitmap(origBitmap.width, origBitmap.height,
-            origBitmap.config)
+        val alteredBitmap = Bitmap.createBitmap(
+            origBitmap.width,
+            origBitmap.height,
+            origBitmap.config
+        )
 
-        // Draw original origBitmap on canvas and apply the color filter
         val canvas = Canvas(alteredBitmap)
         val paint = Paint()
         val colorFilter = LightingColorFilter(filterMultColor, filterAddColor)
         paint.colorFilter = colorFilter
         canvas.drawBitmap(origBitmap, 0f, 0f, paint)
 
-        // Create an entry for the MediaStore
-        val imageValues = ContentValues()
-        imageValues.put(MediaStore.MediaColumns.DISPLAY_NAME, photoFile.name)
-        imageValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        // Convert bitmap to a byte array
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        alteredBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        val imageData = byteArrayOutputStream.toByteArray()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            imageValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-        }
+        // Get Firebase Storage reference
+        val storageRef: StorageReference = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child("images/${photoFile.name}")
 
-        // Insert a new row into the MediaStore
-        val resolver = this@CameraActivity.applicationContext.contentResolver
-        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageValues)
-
-        // Save bitmap as JPEG
-        uri?.let {
-            runCatching {
-                resolver.openOutputStream(it).use { outStream ->
-                    if (outStream != null) {
-                        alteredBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
-                    }
-                }
-            }
+        // Upload the image
+        return@withContext try {
+            imageRef.putBytes(imageData).await() // Use Kotlin Coroutines
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 }
