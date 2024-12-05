@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -80,10 +81,11 @@ class LoginFragment(
                 // Set the logged-in user in the ViewModel (store user info) (placeholder)
                 val scope = CoroutineScope(Dispatchers.Main)
                 scope.launch {
-                    val e = withContext(Dispatchers.IO) {
-                        attemptLogin(userName, userPassword)
-                    }
-                    if(!e) {
+//                    val e = withContext(Dispatchers.IO) {
+//                        attemptLogin(userName, userPassword)
+//                    }
+                    val e = async { attemptLogin(userName, userPassword) }
+                    if(!e.await()) {
                         Toast.makeText(context, "incorrect username or password", Toast.LENGTH_LONG).show()
                     } else {
                         //val intent = Intent(context, HomeActivity::class.java)
@@ -116,6 +118,7 @@ class LoginFragment(
 
     private suspend fun attemptLogin(user: String, pass: String): Boolean {
         val scope = CoroutineScope(Dispatchers.IO)
+        var placeholder = false
         var flag = false
         val job = scope.launch {
             database.child("users").child(user).get()
@@ -124,18 +127,25 @@ class LoginFragment(
                     if (pw.compareTo(hash(pass)) == 0) {
                         Log.i("firebase", "pw: " + pw)
                         flag = true
+                        placeholder = true
                     } else {
                         Log.e("firebase", "pw: " + pw)
+                        placeholder = true
                     }
                 }
                 .addOnFailureListener {
                     Log.e("firebase", "error retrieving from database")
+                    placeholder = true
                 }
+
         }
         runBlocking {
             job.join()
         }
-        delay(100)
+        while (!placeholder) {
+            delay(100)
+        }
+
         return flag
     }
 
