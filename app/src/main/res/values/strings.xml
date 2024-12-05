@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Fotojam</string>
+    <string name="app_name">FotoJam</string>
     <string name="login_button_text">Log In</string>
-    <string name="login_error_text">Account not found!</string>
+    <string name="login_error_text">ACCOUNT_LOGIN_ERROR</string>
     <string name="username_hint_text">Username</string>
     <string name="password_hint_text">Password</string>
-    <string name="create_jam_text">Create a new Fotojam</string>
-    <string name="join_jam_text">Join an existing Fotojam</string>
+    <string name="create_jam_text">Create a new FotoJam</string>
+    <string name="join_jam_text">Join an existing FotoJam</string>
     <string name="logout">Logout</string>
     <string name="view_profile">View Profile</string>
     <string name="jam_name_label">Jam Name</string>
@@ -14,7 +14,7 @@
     <string name="default_jam_description">No description</string>
     <string name="create_jam_button_text">Create Jam</string>
     <string name="start_time_label">Start Time</string>
-    <string name="end_time_label">End Time</string>
+    <string name="end_time_label">Jam Duration</string>
     <string name="jam_code_placeholder">Invite Code</string>
     <string name="join_existing_jam_label">Join an Existing Jam</string>
     <string name="join_existing_jam_button">Join</string>
@@ -22,7 +22,7 @@
     <string name="join_random_jam_button">Join a Random Jam!</string>
     <string name="demo_jam_text">(Demo) Active Jam Activity</string>
     <string name="create_account">Create An Account</string>
-    <string name="back">Back to Login</string>
+    <string name="back">Back to Login Page</string>
     <string name="verify_password">Verify Password</string>
     <string name="take_photo">Take Photo</string>
     <string name="save">Save</string>
@@ -36,13 +36,13 @@
 
     <string name="login_screen">LoginScreen</string>
     <string name="home_screen">HomeScreen</string>
-    <string name="create_account_text">Create Account</string>
-    <string name="account_creation_error">Could not create account!</string>
+    <string name="create_account_text">Create Your Account</string>
+    <string name="account_creation_error">ACCOUNT_CREATION_ERROR</string>
     <string name="confirm_password_hint">Confirm password</string>
     <string name="create_account_title">Create a new Account</string>
     <string name="home_page_title_text">Welcome!</string>
-    <string name="home_page_subtitle_text">Your currently joined Fotojams:</string>
+    <string name="home_page_subtitle_text">Your currently joined FotoJams:</string>
     <string name="fotojam_name_placeholder">FotoJam Name</string>
-    <string name="fotojam_description_placeholder">Could not load information</string>
+    <string name="fotojam_description_placeholder">FotoJam Time Remaining</string>
     <string name="view_fotojam_text">View</string>
 </resources>
