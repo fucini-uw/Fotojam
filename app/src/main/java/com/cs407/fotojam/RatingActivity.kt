@@ -1,10 +1,11 @@
 package com.cs407.fotojam
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cs407.fotojam.R
+import com.google.firebase.storage.FirebaseStorage
 
 class RatingActivity : AppCompatActivity() {
 
@@ -13,21 +14,37 @@ class RatingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_rating)
 
         val recyclerView = findViewById<RecyclerView>(R.id.pictureRecyclerView)
-
-        // placeholder data using drawable
-        val pictureList = listOf(
-            R.drawable.placeholder1,
-            R.drawable.placeholder2,
-            R.drawable.placeholder3
-        )
-
-        // set up RecyclerView with adapter
-        val adapter = PictureRatingAdapter(pictureList) { position, rating ->
-            // handle rating change for now
-            println("Image at position $position rated $rating stars")
-        }
-
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+
+        fetchImagesFromFirebase { imageUrls ->
+            val adapter = PictureRatingAdapter(imageUrls) { position, rating ->
+                // Handle rating change
+                println("Image at position $position rated $rating stars")
+            }
+            recyclerView.adapter = adapter
+        }
+    }
+
+    private fun fetchImagesFromFirebase(onImagesFetched: (List<String>) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/")
+        val imageUrls = mutableListOf<String>()
+
+        storageRef.listAll()
+            .addOnSuccessListener { listResult ->
+                val tasks = listResult.items.map { imageRef ->
+                    imageRef.downloadUrl.addOnSuccessListener { uri ->
+                        imageUrls.add(uri.toString())
+                    }
+                }
+
+                // Wait for all URLs to be fetched
+                tasks.last().addOnSuccessListener {
+                    onImagesFetched(imageUrls)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseStorage", "Failed to list files: ${exception.message}")
+            }
     }
 }
+
