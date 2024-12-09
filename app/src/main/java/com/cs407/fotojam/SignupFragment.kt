@@ -119,7 +119,7 @@ class SignupFragment(
                 errorText.text = "Username already exists!"
                 errorText.visibility = View.VISIBLE
             } else {
-                database.child("users").child(user).setValue(hash(pass))
+                database.child("users").child(user).child("pass").setValue(hash(pass))
                     .addOnSuccessListener {
                         userViewModel.setUser(UserState(0, user, hash(pass)))
                         findNavController().navigate(R.id.action_signupFragment_to_homeFragment)
