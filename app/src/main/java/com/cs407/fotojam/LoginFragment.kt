@@ -127,7 +127,7 @@ class LoginFragment(
         var placeholder = false
         var flag = false
         val job = scope.launch {
-            database.child("users").child(user).get()
+            database.child("users").child(user).child("pass").get()
                 .addOnSuccessListener {
                     val pw = it.value.toString()
                     if (pw.compareTo(hash(pass)) == 0) {

@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@+id/createAccountTitle" />
 
     <EditText
-        android:id="@+id/jamDescEditText"
+        android:id="@+id/JoinCodeEditText"
         style="@style/Widget.Material3.AutoCompleteTextView.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         android:layout_marginEnd="24dp"
         android:background="@drawable/custom_edit_text"
         android:ems="10"
-        android:hint="Describe the jam's theme"
+        android:hint="Create Join Code"
         android:inputType="text"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,70 +69,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/jamStartLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/start_time_label"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/jamDescEditText" />
-
-    <TextView
-        android:id="@+id/jamEndLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/end_time_label"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-    <Spinner
-        android:id="@+id/jamDurationDropdown"
-        style="@android:style/Widget.Material.Spinner"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/custom_edit_text"
-        android:spinnerMode="dropdown"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/jamEndLabel" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/jamStartLabel">
-
-        <TextView
-            android:id="@+id/startTime"
-            android:layout_width="275dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="12/2/2024 21:35"
-            android:textAlignment="gravity"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-        <Button
-            android:id="@+id/editTimeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Edit" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

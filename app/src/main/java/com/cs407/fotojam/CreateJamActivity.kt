@@ -3,6 +3,7 @@ package com.cs407.fotojam
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -14,12 +15,22 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Locale
+import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CreateJamActivity : AppCompatActivity() {
 
     private lateinit var jamStartDateTime: LocalDateTime
+    private lateinit var jamNameEditText: EditText
+    private lateinit var joinCodeEditText: EditText
     private lateinit var jamTitle: String
     private lateinit var jamDescription: String
+    private lateinit var joinCode: String
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,49 +41,63 @@ class CreateJamActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        val editButton: Button = findViewById<Button>(R.id.editTimeButton)
-        editButton.setOnClickListener {
-            getStartDateTime()
-        }
-
+        database = Firebase.database.reference
+        jamNameEditText = findViewById(R.id.jamNameEditText)
+        joinCodeEditText = findViewById(R.id.JoinCodeEditText)
         val createButton: Button = findViewById<Button>(R.id.submitJamToDBButton)
         createButton.setOnClickListener {
-            // TODO: submit request to DB with provided params
-            Toast.makeText(this, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
-            finish()
-        }
-
-        val dropdown = findViewById<Spinner>(R.id.jamDurationDropdown)
-        val items = arrayOf("1 Day", "3 Days", "7 Days")
-        val adapter = ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, items)
-        dropdown.adapter = adapter
-    }
-
-    private fun getStartDateTime() {
-        val datePicker: MaterialDatePicker<Long> = MaterialDatePicker
-            .Builder
-            .datePicker()
-            .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
-            .setTitleText("Select a start date")
-            .build()
-        datePicker.show(supportFragmentManager, "DATE_PICKER")
-
-        datePicker.addOnPositiveButtonClickListener {
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val date = sdf.format(it)
-
-            val timePicker: MaterialTimePicker = MaterialTimePicker
-                .Builder()
-                .setTitleText("Select a start time")
-                .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD)
-                .build()
-            timePicker.show(supportFragmentManager, "TIME_PICKER")
-
-            timePicker.addOnPositiveButtonClickListener {
-                timePicker.hour     // returns the selected hour
-                timePicker.minute   // returns the selected minute
+            jamTitle = jamNameEditText.text.toString()
+            joinCode = joinCodeEditText.text.toString()
+            if (joinCode.isBlank() or jamTitle.isBlank()) {
+                Toast.makeText(this, "Title or code is blank", Toast.LENGTH_SHORT).show()
             }
+            else {
+                val scope = CoroutineScope(Dispatchers.IO)
+                scope.launch {
+                    database.child("jams").child(joinCode).get()
+                        .addOnSuccessListener { dataSnapshot ->
+                            if (dataSnapshot.exists()) {
+                                Toast.makeText(this@CreateJamActivity, "jam code already being used", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                database.child("jams").child(joinCode).child("title").setValue(jamTitle)
+                                finish()
+                                Toast.makeText(this@CreateJamActivity, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+            }
+            // TODO: submit request to DB with provided params
+            //Toast.makeText(this, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
+            //finish()
         }
+
     }
+
+//    private fun getStartDateTime() {
+//        val datePicker: MaterialDatePicker<Long> = MaterialDatePicker
+//            .Builder
+//            .datePicker()
+//            .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
+//            .setTitleText("Select a start date")
+//            .build()
+//        datePicker.show(supportFragmentManager, "DATE_PICKER")
+//
+//        datePicker.addOnPositiveButtonClickListener {
+//            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+//            val date = sdf.format(it)
+//
+//            val timePicker: MaterialTimePicker = MaterialTimePicker
+//                .Builder()
+//                .setTitleText("Select a start time")
+//                .setInputMode(MaterialTimePicker.INPUT_MODE_KEYBOARD)
+//                .build()
+//            timePicker.show(supportFragmentManager, "TIME_PICKER")
+//
+//            timePicker.addOnPositiveButtonClickListener {
+//                timePicker.hour     // returns the selected hour
+//                timePicker.minute   // returns the selected minute
+//            }
+//        }
+//    }
 }
