@@ -25,22 +25,27 @@ class FotojamListAdapter(
     }
 
     override fun onBindViewHolder(holder: ListItemHolder, position: Int) {
-        // TODO: Change title and subtitle based on information in database query
+        val jamID: Int = jamInfoList[position][2].toInt()
+        val jamStage: Int = jamInfoList[position][3].toInt()
+        val jamName: String = jamInfoList[position][0]
+        val jamDescription: String = jamInfoList[position][4]
 
         holder.titleText.text = jamInfoList[position][0]
         holder.subTitleText.text = jamInfoList[position][1]
-
-        val jamID: Int = jamInfoList[position][2].toInt()
-        val jamName: String = jamInfoList[position][0]
-        val jamDescription: String = jamInfoList[position][3]
+        if (jamStage == 0) holder.viewButton.text = "Capture"
+        if (jamStage == 1) holder.viewButton.text = "Vote"
+        if (jamStage >= 2) holder.viewButton.text = "View"
 
         holder.viewButton.setOnClickListener {
             val context = holder.itemView.context
-            val intent = Intent(context, JamActivity::class.java)
-            intent.putExtra("username", username)
-            intent.putExtra("jamId", jamID)
-            intent.putExtra("jamName", jamName)
-            intent.putExtra("jamDescription", jamDescription)
+            var intent: Intent? = null
+            if (jamStage == 0) intent = Intent(context, JamActivity::class.java)
+            if (jamStage == 1) intent = Intent(context, RatingActivity::class.java)
+            if (jamStage >= 2) intent = Intent(context, ResultsActivity::class.java)
+            intent?.putExtra("username", username)
+            intent?.putExtra("jamId", jamID)
+            intent?.putExtra("jamName", jamName)
+            intent?.putExtra("jamDescription", jamDescription)
             context.startActivity(intent)
         }
     }
