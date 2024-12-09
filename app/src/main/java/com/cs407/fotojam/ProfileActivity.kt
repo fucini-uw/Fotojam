@@ -30,12 +30,12 @@ class ProfileActivity : AppCompatActivity() {
         )
 
         // set up RecyclerView with adapter
-        val adapter = PictureRatingAdapter(pictureList) { position, rating ->
-            // handle rating change for now
-            println("Image at position $position rated $rating stars")
-        }
+//        val adapter = PictureRatingAdapter(pictureList) { position, rating ->
+//            // handle rating change for now
+//            println("Image at position $position rated $rating stars")
+//        }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        //recyclerView.adapter = adapter
     }
 }
