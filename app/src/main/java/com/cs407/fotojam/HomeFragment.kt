@@ -27,7 +27,6 @@ class HomeFragment(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         userViewModel = injectedUserViewModel ?: ViewModelProvider(requireActivity())[UserViewModel::class.java]
     }
 
@@ -50,12 +49,6 @@ class HomeFragment(
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.action_view_profile -> {
-                        // TODO: Launch profile activity
-                        val intent = Intent(requireContext(), ProfileActivity::class.java)
-                        startActivity(intent)
-                        true
-                    }
                     R.id.action_logout -> {
                         userViewModel.setUser(UserState())
                         findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
@@ -70,12 +63,8 @@ class HomeFragment(
         //setSupportActionToolbar(toolbar)
         (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
         val username = userViewModel.userState.value.name
-        (activity as AppCompatActivity?)?.supportActionBar?.title = "Welcome, " + username + "!"
+        (activity as AppCompatActivity?)?.supportActionBar?.title = "Hello, " + username + "!"
         (activity as AppCompatActivity?)?.supportActionBar?.subtitle = "Your current FotoJams:"
-
-        //val welcomeText: TextView = view.findViewById<TextView>(R.id.WelcomeText)
-        //welcomeText.text = "Welcome, " + username + "!"
-
 
         val createJamButton: Button = view.findViewById(R.id.createJamButton)
         createJamButton.setOnClickListener {
@@ -95,13 +84,13 @@ class HomeFragment(
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
         val jamInfoList = listOf(
-            "Title 1",
-            "Title 2",
-            "Title 3"
+            listOf("Title 1", "Subtitle 1", "0", "Example Description"),
+            listOf("Title 2", "Subtitle 2", "1", "Example Description"),
+            listOf("Title 3", "Subtitle 3", "2", "Example Description"),
         )
 
         // set up RecyclerView with adapter
-        val adapter = FotojamListAdapter(jamInfoList)
+        val adapter = FotojamListAdapter(jamInfoList, username)
         //recyclerView.layoutManager = LinearLayoutManager(context)
         val layoutManager = LinearLayoutManager(
             activity

@@ -26,10 +26,7 @@ class HomeActivity(
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
-            R.id.action_view_profile -> {
-                // TODO: Launch profile activity
-                true
-            }
+
             R.id.action_logout -> {
                 userViewModel.setUser(UserState())
                 // TODO: return to login activity
