@@ -80,12 +80,14 @@ class HomeFragment(
         val createJamButton: Button = view.findViewById(R.id.createJamButton)
         createJamButton.setOnClickListener {
             val intent = Intent(requireContext(), CreateJamActivity::class.java)
+            intent.putExtra("username", username)
             startActivity(intent)
         }
 
         val joinJamButton: Button = view.findViewById(R.id.joinJamButton)
         joinJamButton.setOnClickListener {
             val intent = Intent(requireContext(), JoinJamActivity::class.java)
+            intent.putExtra("username", username)
             startActivity(intent)
         }
 

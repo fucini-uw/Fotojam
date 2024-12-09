@@ -21,7 +21,7 @@ class JoinJamActivity : AppCompatActivity() {
     private lateinit var joinCodeEditText: EditText
     private lateinit var joinCode: String
     private lateinit var database: DatabaseReference
-    private lateinit var userViewModel: UserViewModel
+    //private lateinit var userViewModel: UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class JoinJamActivity : AppCompatActivity() {
         joinCodeEditText = findViewById(R.id.jamCodeEditTextNumber)
         database = Firebase.database.reference
         //userViewModel = injectedUserViewModel ?: ViewModelProvider(requireActivity())[UserViewModel::class.java]
-
+        val username = intent.getStringExtra("username")
         val joinButton: Button = findViewById(R.id.joinJamSubmitButton)
         joinButton.setOnClickListener {
             joinCode = joinCodeEditText.text.toString()
@@ -48,7 +48,9 @@ class JoinJamActivity : AppCompatActivity() {
                     database.child("jams").child(joinCode).get()
                         .addOnSuccessListener { dataSnapshot ->
                             if (dataSnapshot.exists()) {
-                                //TODO: add jam to user in database after finding out how to do that
+                                if (username != null) {
+                                    database.child("users").child(username).child("jams").child(joinCode).setValue(joinCode)
+                                }
                                 Toast.makeText(this@JoinJamActivity, "jam joined", Toast.LENGTH_SHORT).show()
                                 finish()
                             }

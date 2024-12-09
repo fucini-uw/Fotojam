@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 class CreateJamActivity : AppCompatActivity() {
 
     private lateinit var jamStartDateTime: LocalDateTime
+    private lateinit var jamDescriptionEditText: EditText
     private lateinit var jamNameEditText: EditText
     private lateinit var joinCodeEditText: EditText
     private lateinit var jamTitle: String
@@ -44,10 +45,13 @@ class CreateJamActivity : AppCompatActivity() {
         database = Firebase.database.reference
         jamNameEditText = findViewById(R.id.jamNameEditText)
         joinCodeEditText = findViewById(R.id.JoinCodeEditText)
+        jamDescriptionEditText = findViewById(R.id.jamDescriptionEditText)
+
         val createButton: Button = findViewById<Button>(R.id.submitJamToDBButton)
         createButton.setOnClickListener {
             jamTitle = jamNameEditText.text.toString()
             joinCode = joinCodeEditText.text.toString()
+            jamDescription = jamDescriptionEditText.text.toString()
             if (joinCode.isBlank() or jamTitle.isBlank()) {
                 Toast.makeText(this, "Title or code is blank", Toast.LENGTH_SHORT).show()
             }
@@ -61,6 +65,9 @@ class CreateJamActivity : AppCompatActivity() {
                             }
                             else {
                                 database.child("jams").child(joinCode).child("title").setValue(jamTitle)
+                                database.child("jams").child(joinCode).child("description").setValue(jamDescription)
+                                intent.getStringExtra("username")
+                                    ?.let { it1 -> database.child("users").child(it1).child("jams").child(joinCode).setValue(joinCode)}
                                 finish()
                                 Toast.makeText(this@CreateJamActivity, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
                             }
