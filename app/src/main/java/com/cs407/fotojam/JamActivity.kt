@@ -54,7 +54,7 @@ class JamActivity : AppCompatActivity() {
         descriptionView = findViewById(R.id.textView3)
 
         titleView.text = jamName
-        descriptionView.text = "The theme for this jam is:\n" + description
+        descriptionView.text = "The theme for this jam is:\n\n" + description
         this.runOnUiThread(Runnable {
             Toast.makeText(this, "$id, $name", Toast.LENGTH_SHORT).show()
         })

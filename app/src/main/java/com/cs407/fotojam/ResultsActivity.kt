@@ -3,9 +3,12 @@ package com.cs407.fotojam
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class ResultsActivity : AppCompatActivity() {
+
+    private lateinit var intent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,5 +31,16 @@ class ResultsActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, GalleryActivity::class.java)
             startActivity(intent)
         }
+
+        intent = getIntent();
+
+        val id = intent.getIntExtra("jamId", -1)
+        val name = intent.getStringExtra("username")
+        val jamName = intent.getStringExtra("jamName")
+        val description = intent.getStringExtra("jamDescription")
+
+        this.runOnUiThread(Runnable {
+            Toast.makeText(this, "$id, $name", Toast.LENGTH_SHORT).show()
+        })
     }
 }
