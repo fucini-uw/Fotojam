@@ -52,6 +52,8 @@ class HomeFragment(
                 return when (menuItem.itemId) {
                     R.id.action_view_profile -> {
                         // TODO: Launch profile activity
+                        val intent = Intent(requireContext(), ProfileActivity::class.java)
+                        startActivity(intent)
                         true
                     }
                     R.id.action_logout -> {
@@ -69,6 +71,7 @@ class HomeFragment(
         (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
         val username = userViewModel.userState.value.name
         (activity as AppCompatActivity?)?.supportActionBar?.title = "Welcome, " + username + "!"
+        (activity as AppCompatActivity?)?.supportActionBar?.subtitle = "Your current FotoJams:"
 
         //val welcomeText: TextView = view.findViewById<TextView>(R.id.WelcomeText)
         //welcomeText.text = "Welcome, " + username + "!"

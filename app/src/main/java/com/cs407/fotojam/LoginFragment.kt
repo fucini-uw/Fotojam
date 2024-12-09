@@ -76,6 +76,10 @@ class LoginFragment(
 
             if (userName.isBlank() or userPassword.isBlank()) {
                 // Show an error message if either username or password is empty
+                errorText.text = "Username is empty!"
+                errorText.visibility = View.VISIBLE
+            } else if (userPassword.isBlank()) {
+                errorText.text = "Password is empty!"
                 errorText.visibility = View.VISIBLE
             } else {
                 // Set the logged-in user in the ViewModel (store user info) (placeholder)
@@ -86,7 +90,9 @@ class LoginFragment(
 //                    }
                     val e = async { attemptLogin(userName, userPassword) }
                     if(!e.await()) {
-                        Toast.makeText(context, "incorrect username or password", Toast.LENGTH_LONG).show()
+                        errorText.text = "Incorrect username or password!"
+                        errorText.visibility = View.VISIBLE
+                    //Toast.makeText(context, "incorrect username or password", Toast.LENGTH_LONG).show()
                     } else {
                         //val intent = Intent(context, HomeActivity::class.java)
                         //startActivity(intent)
