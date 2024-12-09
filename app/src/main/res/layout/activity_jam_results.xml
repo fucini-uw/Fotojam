@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Jam Results"
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:textStyle="bold" />
+
+    <!-- Results List -->
+    <LinearLayout
+        android:id="@+id/resultsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <!-- First Item -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/ivPhotoGold"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Gold Rank Image"
+                app:srcCompat="@drawable/placeholder1" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNameGold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: [Gold Winner]"
+                    android:textSize="16sp"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tvRatingGold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rating: 4.9"
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRankGold"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="#FFD700"
+                android:text="1"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- Repeat similar structure for Silver and Bronze items -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/ivPhotoSilver"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Silver Rank Image"
+                app:srcCompat="@drawable/placeholder2" /> <!-- Silver Color -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNameSilver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: [Silver Winner]"
+                    android:textSize="16sp"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tvRatingSilver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rating: 4.8"
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRankSilver"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="#C0C0C0"
+                android:text="2"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/ivPhotoBronze"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="Bronze Rank Image"
+                app:srcCompat="@drawable/placeholder3" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvNameBronze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name: [Bronze Winner]"
+                    android:textSize="16sp"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tvRatingBronze"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rating: 4.7"
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRankBronze"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="#CD7F32"
+                android:text="3"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+        <!-- Buttons at the Bottom -->
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_marginTop="16dp">
+
+        <!-- View Gallery Button -->
+        <Button
+            android:id="@+id/btnViewGallery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="View Gallery"
+            android:backgroundTint="#6200EE"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <!-- Return Home Button -->
+        <Button
+            android:id="@+id/btnReturnHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Return Home"
+            android:backgroundTint="#03A9F4"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>
