@@ -9,7 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class FotojamListAdapter(
-    private val jamInfoList: List<String>
+    private val jamInfoList: List<List<String>>,
+    private val username: String
 ) : RecyclerView.Adapter<FotojamListAdapter.ListItemHolder>() {
 
     inner class ListItemHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,11 +27,20 @@ class FotojamListAdapter(
     override fun onBindViewHolder(holder: ListItemHolder, position: Int) {
         // TODO: Change title and subtitle based on information in database query
 
-        holder.titleText.text = jamInfoList[position]
+        holder.titleText.text = jamInfoList[position][0]
+        holder.subTitleText.text = jamInfoList[position][1]
+
+        val jamID: Int = jamInfoList[position][2].toInt()
+        val jamName: String = jamInfoList[position][0]
+        val jamDescription: String = jamInfoList[position][3]
 
         holder.viewButton.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, JamActivity::class.java)
+            intent.putExtra("username", username)
+            intent.putExtra("jamId", jamID)
+            intent.putExtra("jamName", jamName)
+            intent.putExtra("jamDescription", jamDescription)
             context.startActivity(intent)
         }
     }
