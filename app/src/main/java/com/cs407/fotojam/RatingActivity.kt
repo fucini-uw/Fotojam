@@ -48,9 +48,10 @@ class RatingActivity : AppCompatActivity() {
 
         val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
 
+        val adminText: TextView = findViewById(R.id.textView9)
+        val adminButton: Button = findViewById(R.id.button2)
+
         if (!isAdmin) {
-            val adminText: TextView = findViewById(R.id.textView9)
-            val adminButton: Button = findViewById(R.id.button2)
             adminText.visibility = View.GONE
             adminButton.visibility = View.GONE
         }
@@ -66,6 +67,16 @@ class RatingActivity : AppCompatActivity() {
 
         val submitRatingsButton: Button = findViewById(R.id.submitRatingsButton)
         val endRatingsButton: Button = findViewById(R.id.button2)
+
+        val stageComplete = intent.getBooleanExtra("stageComplete", false)
+        if (stageComplete) {
+            submitRatingsButton.visibility = View.GONE
+            //val share: Button = findViewById(R.id.button2)
+            //share.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+            descriptionView.text = "The description for this jam was:\n\n" + description
+            adminText.text = "You've already sumbitted your ratings, but because you are the creator of this jam, you can still decide when to end voting and finalize the jam results."
+        }
 
         submitRatingsButton.setOnClickListener {
             //TODO: Gather all ratings and submit them to the database and set phaseComplete to true

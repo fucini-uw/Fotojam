@@ -50,10 +50,11 @@ class FotojamListAdapter(
                 holder.viewButton.text = "Vote"
                 holder.subTitleText.text = "No ratings yet..."
             }
-            if (jamStage >= 2) {
-                holder.viewButton.text = "Results"
-                holder.subTitleText.text = "This jam is complete!"
-            }
+        }
+
+        if (jamStage >= 2) {
+            holder.viewButton.text = "Results"
+            holder.subTitleText.text = "This jam is complete!"
         }
 
         holder.viewButton.setOnClickListener {
