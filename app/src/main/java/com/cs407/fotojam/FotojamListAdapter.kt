@@ -32,7 +32,7 @@ class FotojamListAdapter(
 
         val jamID: Int = jamInfoList[position][2].toInt()
         val jamName: String = jamInfoList[position][0]
-        val jamDescription: String = jamInfoList[position][3]
+        val jamDescription: String = jamInfoList[position][4]
 
         holder.viewButton.setOnClickListener {
             val context = holder.itemView.context
