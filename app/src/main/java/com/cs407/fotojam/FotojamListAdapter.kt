@@ -40,7 +40,7 @@ class FotojamListAdapter(
         if (stageComplete) {
             if (!admin) holder.viewButton.visibility = View.GONE
             if (jamStage == 0) holder.subTitleText.text = "You've submitted a photo!"
-            if (jamStage == 2) holder.subTitleText.text = "You've voted on these photos!"
+            if (jamStage == 1) holder.subTitleText.text = "You've voted on these photos!"
         } else {
             if (jamStage == 0) {
                 holder.viewButton.text = "Capture"

@@ -254,6 +254,7 @@ class JamActivity : AppCompatActivity() {
                 if (success) {
                     // Show success message
                     //Toast.makeText(applicationContext, R.string.photo_saved, Toast.LENGTH_LONG).show()
+                    // TODO: set phaseComplete to true
                     Toast.makeText(applicationContext, "Photo submitted!", Toast.LENGTH_SHORT).show()
                 } else {
                     // Show error message

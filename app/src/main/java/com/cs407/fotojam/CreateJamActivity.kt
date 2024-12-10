@@ -70,12 +70,12 @@ class CreateJamActivity : AppCompatActivity() {
                                 intent.getStringExtra("username")
                                     ?.let { it1 -> database.child("users").child(it1).child("jams").child(joinCode).setValue("true")}
                                 finish()
-                                Toast.makeText(this@CreateJamActivity, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@CreateJamActivity, "Jam created!", Toast.LENGTH_SHORT).show()
                             }
                         }
                 }
             }
-            // TODO: submit request to DB with provided params
+            // submit request to DB with provided params
             //Toast.makeText(this, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
             //finish()
         }

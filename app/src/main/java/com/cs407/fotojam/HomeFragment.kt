@@ -108,8 +108,7 @@ class HomeFragment(
         }
     //}
 
-        val jamEntryList = listOf("test", "subtext", "111111", "1", "none", "true", "true")
-        list.add(jamEntryList)
+        //list.add(jamEntryList)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
