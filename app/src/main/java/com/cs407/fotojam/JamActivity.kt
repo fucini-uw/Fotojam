@@ -23,6 +23,9 @@ import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.CoroutineScope
@@ -47,6 +50,7 @@ class JamActivity : AppCompatActivity() {
     private lateinit var photoImageView: ImageView
     private lateinit var brightnessSeekBar: SeekBar
     private lateinit var saveButton: Button
+    private lateinit var database: DatabaseReference
 
     // For adding brightness
     private var multColor = -0x1
@@ -56,6 +60,9 @@ class JamActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_jam)
+
+        database = Firebase.database.reference
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -89,10 +96,12 @@ class JamActivity : AppCompatActivity() {
         val jamName = intent.getStringExtra("jamName")
         val description = intent.getStringExtra("jamDescription")
         val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
+        val stageComplete = intent.getBooleanExtra("stageComplete", false)
+
+        val adminText: TextView = findViewById(R.id.textView)
+        val adminButton: Button = findViewById(R.id.button)
 
         if (!isAdmin) {
-            val adminText: TextView = findViewById(R.id.textView)
-            val adminButton: Button = findViewById(R.id.button)
             adminText.visibility = View.GONE
             adminButton.visibility = View.GONE
         }
@@ -114,6 +123,14 @@ class JamActivity : AppCompatActivity() {
         brightnessSeekBar = findViewById(R.id.brightness_seek_bar2)
         brightnessSeekBar.visibility = View.INVISIBLE
 
+        if (stageComplete) {
+            photoImageView.visibility = View.GONE
+            val share: Button = findViewById(R.id.shareJamButton)
+            share.visibility = View.GONE
+            findViewById<Button>(R.id.capturePhoto).visibility = View.GONE
+            adminText.text = "You've already sumbitted your photo, but because you are the creator of this jam, you can still decide when to end submissions and start the rating stage."
+        }
+
         brightnessSeekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 changeBrightness(progress)
@@ -123,6 +140,12 @@ class JamActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+        adminButton.setOnClickListener {
+            // TODO: set phaseComplete to false
+            database.child("jams").child(jamId.toString()).child("phase").setValue(1)
+            Toast.makeText(applicationContext, "Submissions closed!", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
         this.runOnUiThread(Runnable {
             Toast.makeText(this, "$jamId, $name", Toast.LENGTH_SHORT).show()

@@ -30,14 +30,31 @@ class FotojamListAdapter(
         val jamName: String = jamInfoList[position][0]
         val jamDescription: String = jamInfoList[position][4]
         var admin: Boolean = false
-
         if (jamInfoList[position][5] == "true") admin = true
+        var stageComplete: Boolean = false
+        if (jamInfoList[position][6] == "true") stageComplete = true
 
         holder.titleText.text = jamInfoList[position][0]
         holder.subTitleText.text = jamInfoList[position][1]
-        if (jamStage == 0) holder.viewButton.text = "Capture"
-        if (jamStage == 1) holder.viewButton.text = "Vote"
-        if (jamStage >= 2) holder.viewButton.text = "View"
+
+        if (stageComplete) {
+            if (!admin) holder.viewButton.visibility = View.GONE
+            if (jamStage == 0) holder.subTitleText.text = "You've submitted a photo!"
+            if (jamStage == 2) holder.subTitleText.text = "You've voted on these photos!"
+        } else {
+            if (jamStage == 0) {
+                holder.viewButton.text = "Capture"
+                holder.subTitleText.text = "No submission yet..."
+            }
+            if (jamStage == 1) {
+                holder.viewButton.text = "Vote"
+                holder.subTitleText.text = "No ratings yet..."
+            }
+            if (jamStage >= 2) {
+                holder.viewButton.text = "Results"
+                holder.subTitleText.text = "This jam is complete!"
+            }
+        }
 
         holder.viewButton.setOnClickListener {
             val context = holder.itemView.context
@@ -50,6 +67,7 @@ class FotojamListAdapter(
             intent?.putExtra("jamName", jamName)
             intent?.putExtra("jamDescription", jamDescription)
             intent?.putExtra("userIsAdmin", admin)
+            intent?.putExtra("stageComplete", stageComplete)
             context.startActivity(intent)
         }
     }
