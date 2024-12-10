@@ -46,6 +46,7 @@ class HomeFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = injectedUserViewModel ?: ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        list = mutableListOf()
     }
 
     override fun onCreateView(
@@ -147,6 +148,16 @@ class HomeFragment(
         // Set up the recyclerview
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         database = Firebase.database.reference
+
+        //list = mutableListOf()
+        adapter = FotojamListAdapter(list, username)
+        val layoutManager = LinearLayoutManager(
+            activity
+        )
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        recyclerView.setLayoutManager(layoutManager)
+        recyclerView.adapter = adapter
+        //adapter.notifyDataSetChanged()
     }
 
     override fun onResume() {
