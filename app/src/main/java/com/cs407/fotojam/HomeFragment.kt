@@ -65,9 +65,15 @@ class HomeFragment(
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (child in snapshot.children) {
                         val code = child.key
-                        val isCreator = child.value
-                        if (isCreator != null) {
-                            Log.i("CREATORTYPE", "" + isCreator.javaClass.kotlin.simpleName)
+                        val creatorCompleteByteArr: String = child.value.toString()
+                        var isCreator: String = "false"
+                        var hasCompleted: String = "false"
+                        if (creatorCompleteByteArr != null) {
+                            Log.i("CREATORTYPE", creatorCompleteByteArr)
+                            val isCreatorChar = creatorCompleteByteArr[0]
+                            if (isCreatorChar == '1') { isCreator = "true" }
+                            val hasCompletedChar = creatorCompleteByteArr[1]
+                            if (hasCompletedChar == '1') { hasCompleted = "true" }
                         }
                         if (code != null) {
                             database.child("jams").child(code).get().
@@ -80,9 +86,9 @@ class HomeFragment(
                                     // phaseComplete tracks whether the user has completed the current stage of the jam
                                     // for example, if phase is 0 and phaseComplete is true, the user has submitted a photo
                                     // for the jam. As a result, they will not be able to go back into the jam unless they are the creator
-                                    val phaseComplete = "true"
+                                    val phaseComplete = "false"
 
-                                    val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator, "" + phaseComplete)
+                                    val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator, "" + hasCompleted)
                                     list.add(jamEntryList)
 
                                     // Let adapter know that content of list has changed
