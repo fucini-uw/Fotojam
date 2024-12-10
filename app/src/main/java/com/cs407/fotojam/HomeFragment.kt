@@ -80,7 +80,7 @@ class HomeFragment(
                                     // phaseComplete tracks whether the user has completed the current stage of the jam
                                     // for example, if phase is 0 and phaseComplete is true, the user has submitted a photo
                                     // for the jam. As a result, they will not be able to go back into the jam unless they are the creator
-                                    val phaseComplete = "false"
+                                    val phaseComplete = "true"
 
                                     val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator, "" + phaseComplete)
                                     list.add(jamEntryList)
@@ -108,7 +108,7 @@ class HomeFragment(
         }
     //}
 
-        val jamEntryList = listOf("test", "subtext", "111111", "1", "none", "true", "false")
+        val jamEntryList = listOf("test", "subtext", "111111", "1", "none", "true", "true")
         list.add(jamEntryList)
     }
 
