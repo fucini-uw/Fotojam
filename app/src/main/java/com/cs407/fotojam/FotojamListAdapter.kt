@@ -29,6 +29,9 @@ class FotojamListAdapter(
         val jamStage: Int = jamInfoList[position][3].toInt()
         val jamName: String = jamInfoList[position][0]
         val jamDescription: String = jamInfoList[position][4]
+        var admin: Boolean = false
+
+        if (jamInfoList[position][5] == "true") admin = true
 
         holder.titleText.text = jamInfoList[position][0]
         holder.subTitleText.text = jamInfoList[position][1]
@@ -46,6 +49,7 @@ class FotojamListAdapter(
             intent?.putExtra("jamId", jamID)
             intent?.putExtra("jamName", jamName)
             intent?.putExtra("jamDescription", jamDescription)
+            intent?.putExtra("userIsAdmin", admin)
             context.startActivity(intent)
         }
     }

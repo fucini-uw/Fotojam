@@ -2,6 +2,7 @@ package com.cs407.fotojam
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -9,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 
 class JamActivity : AppCompatActivity() {
 
@@ -52,6 +54,14 @@ class JamActivity : AppCompatActivity() {
         val name = intent.getStringExtra("username")
         val jamName = intent.getStringExtra("jamName")
         val description = intent.getStringExtra("jamDescription")
+        val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
+
+        if (!isAdmin) {
+            val adminText: TextView = findViewById(R.id.textView)
+            val adminButton: Button = findViewById(R.id.button)
+            adminText.visibility = View.GONE
+            adminButton.visibility = View.GONE
+        }
 
         titleView = findViewById(R.id.textView2)
         descriptionView = findViewById(R.id.textView3)
