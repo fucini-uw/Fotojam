@@ -32,7 +32,6 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.util.LinkedList
 
-
 class HomeFragment(
     private val injectedUserViewModel: UserViewModel? = null
 ) : Fragment() {
@@ -41,14 +40,12 @@ class HomeFragment(
     private lateinit var database: DatabaseReference
     private lateinit var adapter: FotojamListAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var jamInfoList: MutableList<List<String>>
-
     private lateinit var username: String
+    private lateinit var list: MutableList<List<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = injectedUserViewModel ?: ViewModelProvider(requireActivity())[UserViewModel::class.java]
-        jamInfoList = mutableListOf()
     }
 
     override fun onCreateView(
@@ -59,77 +56,68 @@ class HomeFragment(
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    fun resetList() {
-        jamInfoList = mutableListOf()
-    }
-
-    fun addToList(entry: List<String>) {
-        jamInfoList.add(entry)
-        Log.i("ADDED", jamInfoList.toString())
-    }
-
-    fun fetchFromDB() {
-        val scope = CoroutineScope(Dispatchers.Main)
+    private suspend fun fetchFromDB() {
         var placeholder = true
-        val job = scope.launch {
-            database.child("users").child(username).child("jams")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        for (child in snapshot.children) {
-                            val code = child.key
-                            val isCreator = child.value
-                            if (code != null) {
-                                database.child("jams").child(code).get().
-                                addOnSuccessListener { dataSnapshot ->
-                                    if (dataSnapshot.exists()) {
-                                        val jamtitle = dataSnapshot.child("title").value
-                                        val description = dataSnapshot.child("description").value
-                                        val phase = dataSnapshot.child("phase").value
+        database.child("users").child(username).child("jams")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (child in snapshot.children) {
+                        val code = child.key
+                        val isCreator = child.value
+                        if (code != null) {
+                            database.child("jams").child(code).get().
+                            addOnSuccessListener { dataSnapshot ->
+                                if (dataSnapshot.exists()) {
+                                    val jamtitle = dataSnapshot.child("title").value
+                                    val description = dataSnapshot.child("description").value
+                                    val phase = dataSnapshot.child("phase").value
 
-                                        val jamEntryList = LinkedList<String>()
-                                        jamEntryList.add("" + jamtitle)
-                                        jamEntryList.add("subtext")
-                                        jamEntryList.add("" + code)
-                                        jamEntryList.add("" + phase)
-                                        jamEntryList.add("" + description)
-                                        jamEntryList.add("" + isCreator)
-                                        addToList(jamEntryList)
-                                    }
+                                    val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator)
+                                    list.add(jamEntryList)
+
+                                    // Let adapter know that content of list has changed
+                                    // It will redraw every element in the list (slow!)
+                                    // Put this call here because the successListener for firebase
+                                    // is asynchronous and can return at any time
+                                    adapter.notifyDataSetChanged()
                                 }
                             }
                         }
-                        placeholder = false
                     }
+                    placeholder = false
+                }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e("firebase", "error fetching jams")
-                        placeholder = false
-                    }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("firebase", "error fetching jams")
+                    placeholder = false
+                }
 
-                })
-            while (placeholder) {
-                delay(100)
-            }
-        //if (adapter.isInitialized) {
-
-            adapter = FotojamListAdapter(jamInfoList, username)
-            //recyclerView.layoutManager = LinearLayoutManager(context)
-            val layoutManager = LinearLayoutManager(
-                activity
-            )
-            layoutManager.orientation = LinearLayoutManager.VERTICAL
-            recyclerView.setLayoutManager(layoutManager)
-            recyclerView.adapter = adapter
-
-            //if (this::adapter.isInitialized) {
-            adapter.notifyDataSetChanged()
-        //}
+            })
+        while (placeholder) {
+            delay(100)
         }
+    //}
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set on click handlers for the buttons
+        val createJamButton: Button = view.findViewById(R.id.createJamButton)
+        createJamButton.setOnClickListener {
+            val intent = Intent(requireContext(), CreateJamActivity::class.java)
+            intent.putExtra("username", username)
+            startActivity(intent)
+        }
+
+        val joinJamButton: Button = view.findViewById(R.id.joinJamButton)
+        joinJamButton.setOnClickListener {
+            val intent = Intent(requireContext(), JoinJamActivity::class.java)
+            intent.putExtra("username", username)
+            startActivity(intent)
+        }
+
+        // Add the menu bar
         val menuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -148,6 +136,7 @@ class HomeFragment(
             }
         }, viewLifecycleOwner)
 
+        // Update the toolbar titles
         val toolbar: Toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         //setSupportActionToolbar(toolbar)
         (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
@@ -158,64 +147,22 @@ class HomeFragment(
         // Set up the recyclerview
         recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         database = Firebase.database.reference
-
-        fetchFromDB()
-
-        adapter = FotojamListAdapter(jamInfoList, username)
-        //recyclerView.layoutManager = LinearLayoutManager(context)
-        val layoutManager = LinearLayoutManager(
-            activity
-        )
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.setLayoutManager(layoutManager)
-        recyclerView.adapter = adapter
-
-        //if (this::adapter.isInitialized) {
-        adapter.notifyDataSetChanged()
-        //}
-
-        val createJamButton: Button = view.findViewById(R.id.createJamButton)
-        createJamButton.setOnClickListener {
-            val intent = Intent(requireContext(), CreateJamActivity::class.java)
-            intent.putExtra("username", username)
-            startActivity(intent)
-        }
-
-        val joinJamButton: Button = view.findViewById(R.id.joinJamButton)
-        joinJamButton.setOnClickListener {
-            val intent = Intent(requireContext(), JoinJamActivity::class.java)
-            intent.putExtra("username", username)
-            startActivity(intent)
-        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        fetchFromDB()
-
-        adapter = FotojamListAdapter(jamInfoList, username)
-        //recyclerView.layoutManager = LinearLayoutManager(context)
-        val layoutManager = LinearLayoutManager(
-            activity
-        )
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.setLayoutManager(layoutManager)
-        recyclerView.adapter = adapter
-
-        //if (this::adapter.isInitialized) {
-        adapter.notifyDataSetChanged()
-
-        val scope = CoroutineScope(Dispatchers.Main)
-        val job = scope.launch {
-            Log.i("CONTENT", jamInfoList.toString())
-            Toast.makeText(context, "Fragment resumed", Toast.LENGTH_SHORT).show()
-            adapter = FotojamListAdapter(jamInfoList, username)
+        CoroutineScope(Dispatchers.Main).launch {
+            list = mutableListOf() // Remove all local DB entries on each refresh (slow!)
+            fetchFromDB() // Asynchronous
+            adapter = FotojamListAdapter(list, username)
+            val layoutManager = LinearLayoutManager(
+                activity
+            )
+            layoutManager.orientation = LinearLayoutManager.VERTICAL
+            recyclerView.setLayoutManager(layoutManager)
             recyclerView.adapter = adapter
+            adapter.notifyDataSetChanged()
         }
-
-        //if (this::adapter.isInitialized) {
-        //    adapter.notifyDataSetChanged()
-        //}
     }
 }
