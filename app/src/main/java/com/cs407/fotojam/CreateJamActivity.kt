@@ -66,8 +66,9 @@ class CreateJamActivity : AppCompatActivity() {
                             else {
                                 database.child("jams").child(joinCode).child("title").setValue(jamTitle)
                                 database.child("jams").child(joinCode).child("description").setValue(jamDescription)
+                                database.child("jams").child(joinCode).child("phase").setValue(0)
                                 intent.getStringExtra("username")
-                                    ?.let { it1 -> database.child("users").child(it1).child("jams").child(joinCode).setValue(joinCode)}
+                                    ?.let { it1 -> database.child("users").child(it1).child("jams").child(joinCode).setValue("true")}
                                 finish()
                                 Toast.makeText(this@CreateJamActivity, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
                             }
