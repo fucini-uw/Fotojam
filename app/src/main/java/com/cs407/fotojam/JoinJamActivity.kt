@@ -63,7 +63,7 @@ class JoinJamActivity : AppCompatActivity() {
                                 if (username != null) {
                                     database.child("users").child(username).child("jams").child(joinCode).setValue("false")
                                 }
-                                Toast.makeText(this@JoinJamActivity, "jam joined", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@JoinJamActivity, "Jam joined!", Toast.LENGTH_SHORT).show()
                                 finish()
                             }
                             else {
