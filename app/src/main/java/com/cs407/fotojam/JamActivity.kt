@@ -28,10 +28,14 @@ class JamActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
+        intent = getIntent();
+        jamId = intent.getIntExtra("jamId", -1)
+        val name = intent.getStringExtra("username")
         val jamDemoButton: Button = findViewById(R.id.capturePhoto)
         jamDemoButton.setOnClickListener {
             val intent = Intent(applicationContext, CameraActivity::class.java)
+            intent.putExtra("username", name)
+            intent.putExtra("jamId", jamId)
             startActivity(intent)
         }
 
@@ -48,10 +52,7 @@ class JamActivity : AppCompatActivity() {
                 startActivity(shareIntent)
             }
         }
-        intent = getIntent();
 
-        jamId = intent.getIntExtra("jamId", -1)
-        val name = intent.getStringExtra("username")
         val jamName = intent.getStringExtra("jamName")
         val description = intent.getStringExtra("jamDescription")
         val isAdmin = intent.getBooleanExtra("userIsAdmin", false)

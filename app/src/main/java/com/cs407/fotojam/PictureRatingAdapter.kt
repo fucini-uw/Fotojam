@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
 class PictureRatingAdapter(
-    private val pictures: List<String>, // List of image URLs
+    private val pictures: List<String>,
     private val onRatingChanged: (position: Int, rating: Float) -> Unit
 ) : RecyclerView.Adapter<PictureRatingAdapter.PictureViewHolder>() {
+
+    private val ratingsMap = mutableMapOf<Int, Float>()
 
     inner class PictureViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.findViewById(R.id.itemImageView)
@@ -31,14 +33,13 @@ class PictureRatingAdapter(
     override fun onBindViewHolder(holder: PictureViewHolder, position: Int) {
         val picture = pictures[position]
 
-        // Load image from URL using Glide
+        // Load image
         Glide.with(holder.itemView.context)
             .load(picture)
             .into(holder.imageView)
-        Log.e("PictureRatingAdapter:", "Picture: $picture")
 
-        holder.ratingBar.rating = 0f
         holder.ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            ratingsMap[position] = rating
             onRatingChanged(position, rating)
         }
 
@@ -49,7 +50,8 @@ class PictureRatingAdapter(
             context.startActivity(intent)
         }
     }
-    //what
-    override fun getItemCount(): Int = pictures.size
-}
 
+    override fun getItemCount(): Int = pictures.size
+
+    fun getRatings(): Map<Int, Float> = ratingsMap
+}
