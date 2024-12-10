@@ -48,6 +48,7 @@ class JamActivity : AppCompatActivity() {
                 startActivity(shareIntent)
             }
         }
+
         intent = getIntent();
 
         jamId = intent.getIntExtra("jamId", -1)

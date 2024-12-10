@@ -1,13 +1,16 @@
 package com.cs407.fotojam
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
@@ -33,6 +36,13 @@ class JoinJamActivity : AppCompatActivity() {
             insets
         }
         joinCodeEditText = findViewById(R.id.jamCodeEditTextNumber)
+
+        val joinJamErrorText: TextView = findViewById(R.id.joinJamErrorText)
+        joinJamErrorText.visibility = View.GONE
+        joinCodeEditText.doAfterTextChanged {
+            joinJamErrorText.visibility = View.GONE
+        }
+
         database = Firebase.database.reference
         //userViewModel = injectedUserViewModel ?: ViewModelProvider(requireActivity())[UserViewModel::class.java]
         val username = intent.getStringExtra("username")
@@ -40,7 +50,9 @@ class JoinJamActivity : AppCompatActivity() {
         joinButton.setOnClickListener {
             joinCode = joinCodeEditText.text.toString()
             if (joinCode.isEmpty()) {
-                Toast.makeText(this, "Join code is blank", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Join code is blank", Toast.LENGTH_SHORT).show()
+                joinJamErrorText.text = "Join code is blank!"
+                joinJamErrorText.visibility = View.VISIBLE
             }
             else {
                 val scope = CoroutineScope(Dispatchers.IO)
@@ -56,8 +68,11 @@ class JoinJamActivity : AppCompatActivity() {
                             }
                             else {
                                 //database.child("jams").child(joinCode).child("title").setValue(jamTitle)
-                                Toast.makeText(this@JoinJamActivity, "invalid join code", Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(this@JoinJamActivity, "invalid join code", Toast.LENGTH_SHORT).show()
                                 //Toast.makeText(this@CreateJamActivity, "Jam \"Created\"", Toast.LENGTH_SHORT).show()
+                                joinJamErrorText.text = "Invalid join code!"
+                                joinJamErrorText.visibility = View.VISIBLE
+
                             }
                         }
                 }
