@@ -2,6 +2,7 @@ package com.cs407.fotojam
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -17,6 +18,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
 
 
 class HomeFragment(
@@ -24,6 +36,9 @@ class HomeFragment(
 ) : Fragment() {
 
     private lateinit var userViewModel: UserViewModel
+    private lateinit var database: DatabaseReference
+    private lateinit var adapter: FotojamListAdapter
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,22 +96,75 @@ class HomeFragment(
         }
 
         // Set up the recyclerview
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        database = Firebase.database.reference
 
-        val jamInfoList = listOf(
-            listOf("Title 1", "Subtitle 1", "0", "Example Description"),
+        var jamInfoList = mutableListOf(
+            listOf("Title 1", "Subtitle 1", "0", "0", "Example Description"),
             listOf("Title 2", "Subtitle 2", "1", "Example Description"),
             listOf("Title 3", "Subtitle 3", "2", "Example Description"),
+            listOf("title 4", "asfsa", "4", "asdfasdf")
         )
+        val scope = CoroutineScope(Dispatchers.Main)
+        var placeholder = true
+        val job = scope.launch {
+            database.child("users").child(username).child("jams")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        for (child in snapshot.children) {
+                            val code = child.key
+                            val isCreator = child.value
+                            if (code != null) {
+                                database.child("jams").child(code).get().
+                                addOnSuccessListener { dataSnapshot ->
+                                    if (dataSnapshot.exists()) {
+                                        val jamtitle = dataSnapshot.child("title").value
+                                        val description = dataSnapshot.child("description").value
+                                        val phase = dataSnapshot.child("phase").value
+                                        listOf(jamtitle, "placeholder", code, phase, description, phase)
+                                        jamInfoList.add(listOf(jamtitle, "placeholder", code, phase, description, isCreator) as List<String>)
+                                        Log.i(jamtitle.toString(), description.toString())
+                                    }
+                                }
+                            }
+                        }
+                        placeholder = false
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("firebase", "error fetching jams")
+                        placeholder = false
+                    }
+
+                })
+            while (placeholder) {
+                delay(100)
+            }
+            adapter = FotojamListAdapter(jamInfoList, username)
+            //recyclerView.layoutManager = LinearLayoutManager(context)
+            val layoutManager = LinearLayoutManager(
+                activity
+            )
+            layoutManager.orientation = LinearLayoutManager.VERTICAL
+            recyclerView.setLayoutManager(layoutManager)
+            recyclerView.adapter = adapter
+        }
 
         // set up RecyclerView with adapter
-        val adapter = FotojamListAdapter(jamInfoList, username)
-        //recyclerView.layoutManager = LinearLayoutManager(context)
-        val layoutManager = LinearLayoutManager(
-            activity
-        )
-        layoutManager.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.setLayoutManager(layoutManager)
-        recyclerView.adapter = adapter
+//        val adapter = FotojamListAdapter(jamInfoList, username)
+//        //recyclerView.layoutManager = LinearLayoutManager(context)
+//        val layoutManager = LinearLayoutManager(
+//            activity
+//        )
+//        layoutManager.orientation = LinearLayoutManager.VERTICAL
+//        recyclerView.setLayoutManager(layoutManager)
+//        recyclerView.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (this::adapter.isInitialized) {
+            adapter.notifyDataSetChanged()
+        }
     }
 }
