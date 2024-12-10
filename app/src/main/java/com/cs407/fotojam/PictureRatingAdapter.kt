@@ -49,7 +49,7 @@ class PictureRatingAdapter(
             context.startActivity(intent)
         }
     }
-
+    //what
     override fun getItemCount(): Int = pictures.size
 }
 
