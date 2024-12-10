@@ -85,9 +85,9 @@ class HomeFragment(
 
         val jamInfoList = listOf(
             // Title, Subtitle, Jam ID, Jam Stage as Int, jam Description
-            listOf("Title 1", "Subtitle 1", "0", "0", "Example Description"),
-            listOf("Title 2", "Subtitle 2", "1", "1", "Example Description"),
-            listOf("Title 3", "Subtitle 3", "2", "2", "Example Description")
+            listOf("Title 1", "Subtitle 1", "1234", "0", "Example Description"),
+            listOf("Title 2", "Subtitle 2", "1235", "1", "Example Description"),
+            listOf("Title 3", "Subtitle 3", "1236", "2", "Example Description")
         )
 
         // set up RecyclerView with adapter

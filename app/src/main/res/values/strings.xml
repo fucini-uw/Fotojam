@@ -45,4 +45,7 @@
     <string name="fotojam_name_placeholder">FotoJam Name</string>
     <string name="fotojam_description_placeholder">FotoJam Time Remaining</string>
     <string name="view_fotojam_text">View</string>
+    <string name="ADMIN_TEXT">Because you created this jam, you can end submissions and start the rating stage whenever you want!</string>
+    <string name="end_submission_button_text">Close Submissions</string>
+    <string name="JAM_THEME_PLACEHOLDER">JAM_THEME_PLACEHOLDER</string>
 </resources>
