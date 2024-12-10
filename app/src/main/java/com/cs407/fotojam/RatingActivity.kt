@@ -1,13 +1,22 @@
 package com.cs407.fotojam
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.storage.FirebaseStorage
 
 class RatingActivity : AppCompatActivity() {
+
+    private lateinit var intent: Intent
+    private lateinit var titleView: TextView
+    private lateinit var descriptionView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +32,32 @@ class RatingActivity : AppCompatActivity() {
             }
             recyclerView.adapter = adapter
         }
+
+        intent = getIntent();
+
+        val id = intent.getIntExtra("jamId", -1)
+        val name = intent.getStringExtra("username")
+        val jamName = intent.getStringExtra("jamName")
+        val description = intent.getStringExtra("jamDescription")
+
+        val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
+
+        if (!isAdmin) {
+            val adminText: TextView = findViewById(R.id.textView9)
+            val adminButton: Button = findViewById(R.id.button2)
+            adminText.visibility = View.GONE
+            adminButton.visibility = View.GONE
+        }
+
+        titleView = findViewById(R.id.textView12)
+        descriptionView = findViewById(R.id.textView13)
+
+        titleView.text = jamName
+        descriptionView.text = "Submissions have ended. It's time to vote on which picture is best! The description for this jam was:\n\n" + description
+        this.runOnUiThread(Runnable {
+            Toast.makeText(this, "$id, $name", Toast.LENGTH_SHORT).show()
+        })
+
     }
 
     private fun fetchImagesFromFirebase(onImagesFetched: (List<String>) -> Unit) {
