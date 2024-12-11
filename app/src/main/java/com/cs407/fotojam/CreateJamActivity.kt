@@ -52,10 +52,11 @@ class CreateJamActivity : AppCompatActivity() {
             jamTitle = jamNameEditText.text.toString()
             joinCode = joinCodeEditText.text.toString()
             jamDescription = jamDescriptionEditText.text.toString()
+
             if (joinCode.isBlank() or jamTitle.isBlank()) {
                 Toast.makeText(this, "Title or code is blank", Toast.LENGTH_SHORT).show()
             }
-            else if (joinCode.toInt().toString() != joinCode || joinCode.toInt() >= Integer.MAX_VALUE) {
+            else if (joinCode.toInt().toString() != joinCode) {
                 Toast.makeText(this, "invalid join code", Toast.LENGTH_LONG).show()
             }
             else {
