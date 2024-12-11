@@ -2,6 +2,7 @@ package com.cs407.fotojam
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
@@ -17,17 +19,35 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
+import com.google.firebase.Firebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import java.util.LinkedList
+import kotlin.reflect.typeOf
 
 class HomeFragment(
     private val injectedUserViewModel: UserViewModel? = null
 ) : Fragment() {
 
     private lateinit var userViewModel: UserViewModel
+    private lateinit var database: DatabaseReference
+    private lateinit var adapter: FotojamListAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var username: String
+    private lateinit var list: MutableList<List<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userViewModel = injectedUserViewModel ?: ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        list = mutableListOf()
     }
 
     override fun onCreateView(
@@ -38,9 +58,78 @@ class HomeFragment(
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
+    private suspend fun fetchFromDB() {
+        var placeholder = true
+        database.child("users").child(username).child("jams")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (child in snapshot.children) {
+                        val code = child.key
+                        val isCreator = child.value
+                        if (isCreator != null) {
+                            Log.i("CREATORTYPE", "" + isCreator.javaClass.kotlin.simpleName)
+                        }
+                        if (code != null) {
+                            database.child("jams").child(code).get().
+                            addOnSuccessListener { dataSnapshot ->
+                                if (dataSnapshot.exists()) {
+                                    val jamtitle = dataSnapshot.child("title").value
+                                    val description = dataSnapshot.child("description").value
+                                    val phase = dataSnapshot.child("phase").value
+
+                                    // phaseComplete tracks whether the user has completed the current stage of the jam
+                                    // for example, if phase is 0 and phaseComplete is true, the user has submitted a photo
+                                    // for the jam. As a result, they will not be able to go back into the jam unless they are the creator
+                                    val phaseComplete = "true"
+
+                                    val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator, "" + phaseComplete)
+                                    list.add(jamEntryList)
+
+                                    // Let adapter know that content of list has changed
+                                    // It will redraw every element in the list (slow!)
+                                    // Put this call here because the successListener for firebase
+                                    // is asynchronous and can return at any time
+                                    adapter.notifyDataSetChanged()
+                                }
+                            }
+                        }
+                    }
+                    placeholder = false
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("firebase", "error fetching jams")
+                    placeholder = false
+                }
+
+            })
+        while (placeholder) {
+            delay(100)
+        }
+    //}
+
+        //list.add(jamEntryList)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set on click handlers for the buttons
+        val createJamButton: Button = view.findViewById(R.id.createJamButton)
+        createJamButton.setOnClickListener {
+            val intent = Intent(requireContext(), CreateJamActivity::class.java)
+            intent.putExtra("username", username)
+            startActivity(intent)
+        }
+
+        val joinJamButton: Button = view.findViewById(R.id.joinJamButton)
+        joinJamButton.setOnClickListener {
+            val intent = Intent(requireContext(), JoinJamActivity::class.java)
+            intent.putExtra("username", username)
+            startActivity(intent)
+        }
+
+        // Add the menu bar
         val menuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -59,47 +148,43 @@ class HomeFragment(
             }
         }, viewLifecycleOwner)
 
+        // Update the toolbar titles
         val toolbar: Toolbar = view.findViewById<Toolbar>(R.id.toolbar)
         //setSupportActionToolbar(toolbar)
         (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
-        val username = userViewModel.userState.value.name
+        username = userViewModel.userState.value.name
         (activity as AppCompatActivity?)?.supportActionBar?.title = "Hello, " + username + "!"
         (activity as AppCompatActivity?)?.supportActionBar?.subtitle = "Your current FotoJams:"
 
-        val createJamButton: Button = view.findViewById(R.id.createJamButton)
-        createJamButton.setOnClickListener {
-            val intent = Intent(requireContext(), CreateJamActivity::class.java)
-            intent.putExtra("username", username)
-            startActivity(intent)
-        }
-
-        val joinJamButton: Button = view.findViewById(R.id.joinJamButton)
-        joinJamButton.setOnClickListener {
-            val intent = Intent(requireContext(), JoinJamActivity::class.java)
-            intent.putExtra("username", username)
-            startActivity(intent)
-        }
-
         // Set up the recyclerview
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        database = Firebase.database.reference
 
-        val jamInfoList = listOf(
-            // Title, Subtitle, Jam ID, Jam Stage as Int, jam Description
-            listOf("Title 1", "Subtitle 1", "1234", "0", "Example Description 1", "true"),
-            listOf("Title 2", "Subtitle 2", "1235", "0", "Example Description 2", "false"),
-            listOf("Title 3", "Subtitle 3", "1236", "1", "Example Description 3", "true"),
-            listOf("Title 4", "Subtitle 4", "1237", "1", "Example Description 4", "false"),
-            listOf("Title 5", "Subtitle 5", "1238", "2", "Example Description 5", "true")
-        )
-
-        // set up RecyclerView with adapter
-        val adapter = FotojamListAdapter(jamInfoList, username)
-        //recyclerView.layoutManager = LinearLayoutManager(context)
+        //list = mutableListOf()
+        adapter = FotojamListAdapter(list, username)
         val layoutManager = LinearLayoutManager(
             activity
         )
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.setLayoutManager(layoutManager)
         recyclerView.adapter = adapter
+        //adapter.notifyDataSetChanged()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            list = mutableListOf() // Remove all local DB entries on each refresh (slow!)
+            fetchFromDB() // Asynchronous
+            adapter = FotojamListAdapter(list, username)
+            val layoutManager = LinearLayoutManager(
+                activity
+            )
+            layoutManager.orientation = LinearLayoutManager.VERTICAL
+            recyclerView.setLayoutManager(layoutManager)
+            recyclerView.adapter = adapter
+            adapter.notifyDataSetChanged()
+        }
     }
 }

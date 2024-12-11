@@ -29,7 +29,7 @@ class HomeActivity(
 
             R.id.action_logout -> {
                 userViewModel.setUser(UserState())
-                // TODO: return to login activity
+                // return to login activity
                 true
             }
             else -> false

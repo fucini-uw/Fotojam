@@ -10,6 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageMetadata
 
@@ -19,10 +22,13 @@ class RatingActivity : AppCompatActivity() {
     private lateinit var titleView: TextView
     private lateinit var descriptionView: TextView
     private lateinit var imageUrls: List<String>
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_rating)
+
+        database = Firebase.database.reference
 
         val recyclerView = findViewById<RecyclerView>(R.id.pictureRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -46,9 +52,10 @@ class RatingActivity : AppCompatActivity() {
 
         val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
 
+        val adminText: TextView = findViewById(R.id.textView9)
+        val adminButton: Button = findViewById(R.id.button2)
+
         if (!isAdmin) {
-            val adminText: TextView = findViewById(R.id.textView9)
-            val adminButton: Button = findViewById(R.id.button2)
             adminText.visibility = View.GONE
             adminButton.visibility = View.GONE
         }
@@ -113,6 +120,32 @@ class RatingActivity : AppCompatActivity() {
             startActivity(resultsIntent)
             finish()
         }
+        val submitRatingsButton: Button = findViewById(R.id.submitRatingsButton)
+        val endRatingsButton: Button = findViewById(R.id.button2)
+
+        val stageComplete = intent.getBooleanExtra("stageComplete", false)
+        if (stageComplete) {
+            submitRatingsButton.visibility = View.GONE
+            //val share: Button = findViewById(R.id.button2)
+            //share.visibility = View.GONE
+            recyclerView.visibility = View.GONE
+            descriptionView.text = "The description for this jam was:\n\n" + description
+            adminText.text = "You've already sumbitted your ratings, but because you are the creator of this jam, you can still decide when to end voting and finalize the jam results."
+        }
+
+        submitRatingsButton.setOnClickListener {
+            //TODO: Gather all ratings and submit them to the database and set phaseComplete to true
+            Toast.makeText(applicationContext, "Ratings submitted!", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
+        endRatingsButton.setOnClickListener {
+            // TODO: set phaseComplete to false
+            database.child("jams").child(id.toString()).child("phase").setValue(2)
+            Toast.makeText(applicationContext, "Votes finalized!", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
     }
 
     private fun fetchImagesFromFirebase(onImagesFetched: (List<String>) -> Unit) {
