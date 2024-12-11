@@ -22,8 +22,9 @@ class ResultsActivity : AppCompatActivity() {
         val btnReturnHome = findViewById<Button>(R.id.btnReturnHome)
         btnReturnHome.setOnClickListener {
             // Navigate to HomeActivity
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
+            //val intent = Intent(applicationContext, MainActivity::class.java)
+            //startActivity(intent)
+            finish()
         }
     }
 

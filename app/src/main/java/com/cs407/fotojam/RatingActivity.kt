@@ -111,6 +111,7 @@ class RatingActivity : AppCompatActivity() {
 
             // Start the ResultsActivity
             startActivity(resultsIntent)
+            finish()
         }
     }
 
