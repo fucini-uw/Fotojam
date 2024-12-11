@@ -137,15 +137,15 @@ class RatingActivity : AppCompatActivity() {
 
         submitRatingsButton.setOnClickListener {
             //TODO: Gather all ratings and submit them to the database
-            var state: String = "01"
-            if (isAdmin) { state = "11" }
+            var state: String = "011"
+            if (isAdmin) { state = "111" }
             database.child("users").child(username).child("jams").child(id.toString()).setValue(state)
             Toast.makeText(applicationContext, "Ratings submitted!", Toast.LENGTH_SHORT).show()
             finish()
         }
 
         endRatingsButton.setOnClickListener {
-            database.child("users").child(username).child("jams").child(id.toString()).setValue("10")
+            database.child("users").child(username).child("jams").child(id.toString()).setValue("111")
             database.child("jams").child(id.toString()).child("phase").setValue(2)
             Toast.makeText(applicationContext, "Votes finalized!", Toast.LENGTH_SHORT).show()
             finish()

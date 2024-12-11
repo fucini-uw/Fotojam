@@ -67,13 +67,16 @@ class HomeFragment(
                         val code = child.key
                         val creatorCompleteByteArr: String = child.value.toString()
                         var isCreator: String = "false"
-                        var hasCompleted: String = "false"
+                        var hasSubmitted: String = "false"
+                        var hasVoted: String = "false"
                         if (creatorCompleteByteArr != null) {
                             Log.i("CREATORTYPE", creatorCompleteByteArr)
                             val isCreatorChar = creatorCompleteByteArr[0]
                             if (isCreatorChar == '1') { isCreator = "true" }
-                            val hasCompletedChar = creatorCompleteByteArr[1]
-                            if (hasCompletedChar == '1') { hasCompleted = "true" }
+                            val hasSubmittedChar = creatorCompleteByteArr[1]
+                            if (hasSubmittedChar == '1') { hasSubmitted = "true" }
+                            val hasVotedChar = creatorCompleteByteArr[2]
+                            if (hasVotedChar == '1') { hasVoted = "true" }
                         }
                         if (code != null) {
                             database.child("jams").child(code).get().
@@ -88,7 +91,7 @@ class HomeFragment(
                                     // for the jam. As a result, they will not be able to go back into the jam unless they are the creator
                                     val phaseComplete = "false"
 
-                                    val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator, "" + hasCompleted)
+                                    val jamEntryList = listOf("" + jamtitle, "subtext", "" + code, "" + phase, "" + description, "" + isCreator, "" + hasSubmitted, "" + hasVoted)
                                     list.add(jamEntryList)
 
                                     // Let adapter know that content of list has changed

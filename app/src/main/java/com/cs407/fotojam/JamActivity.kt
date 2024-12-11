@@ -144,7 +144,7 @@ class JamActivity : AppCompatActivity() {
 
         adminButton.setOnClickListener {
             // Set phaseComplete to false
-            database.child("users").child(username).child("jams").child(jamId.toString()).setValue("10")
+            database.child("users").child(username).child("jams").child(jamId.toString()).setValue("110")
             database.child("jams").child(jamId.toString()).child("phase").setValue(1)
             Toast.makeText(applicationContext, "Submissions closed!", Toast.LENGTH_SHORT).show()
             finish()
@@ -257,8 +257,8 @@ class JamActivity : AppCompatActivity() {
                 if (success) {
                     // Show success message
                     //Toast.makeText(applicationContext, R.string.photo_saved, Toast.LENGTH_LONG).show()
-                    var state: String = "01"
-                    if (isAdmin) { state = "11" }
+                    var state: String = "010"
+                    if (isAdmin) { state = "110" }
                     database.child("users").child(username).child("jams").child(jamId.toString()).setValue(state)
                     Toast.makeText(applicationContext, "Photo submitted!", Toast.LENGTH_SHORT).show()
                 } else {

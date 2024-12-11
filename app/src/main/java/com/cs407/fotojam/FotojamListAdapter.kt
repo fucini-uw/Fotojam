@@ -31,27 +31,30 @@ class FotojamListAdapter(
         val jamDescription: String = jamInfoList[position][4]
         var admin: Boolean = false
         if (jamInfoList[position][5] == "true") admin = true
-        var stageComplete: Boolean = false
-        if (jamInfoList[position][6] == "true") stageComplete = true
+        var submitted: Boolean = false
+        if (jamInfoList[position][6] == "true") submitted = true
+        var voted: Boolean = false
+        if (jamInfoList[position][7] == "true") voted = true
 
         holder.titleText.text = jamInfoList[position][0]
         holder.subTitleText.text = jamInfoList[position][1]
 
-        if (stageComplete) {
-            if (!admin) holder.viewButton.visibility = View.GONE
-            if (jamStage == 0) holder.subTitleText.text = "You've submitted a photo!"
-            if (jamStage == 1) holder.subTitleText.text = "You've voted on these photos!"
-        } else {
-            if (jamStage == 0) {
-                holder.viewButton.text = "Capture"
-                holder.subTitleText.text = "No submission yet..."
-            }
-            if (jamStage == 1) {
-                holder.viewButton.text = "Vote"
-                holder.subTitleText.text = "No ratings yet..."
-            }
+        if (jamStage == 0 && !submitted){
+            holder.viewButton.text = "Capture"
+            holder.subTitleText.text = "No submission yet..."
         }
-
+        if (jamStage == 0 && submitted){
+            if (!admin) holder.viewButton.visibility = View.GONE
+            holder.subTitleText.text = "You've submited a photo!"
+        }
+        if (jamStage == 1 && !voted){
+            holder.viewButton.text = "Vote"
+            holder.subTitleText.text = "No ratings yet..."
+        }
+        if (jamStage == 1 && voted){
+            if (!admin) holder.viewButton.visibility = View.GONE
+            holder.subTitleText.text = "You've voted on these photos!"
+        }
         if (jamStage >= 2) {
             holder.viewButton.text = "Results"
             holder.subTitleText.text = "This jam is complete!"
@@ -68,7 +71,8 @@ class FotojamListAdapter(
             intent?.putExtra("jamName", jamName)
             intent?.putExtra("jamDescription", jamDescription)
             intent?.putExtra("userIsAdmin", admin)
-            intent?.putExtra("stageComplete", stageComplete)
+            if (jamStage == 0) intent?.putExtra("stageComplete", submitted)
+            if (jamStage == 1) intent?.putExtra("stageComplete", voted)
             context.startActivity(intent)
         }
     }
