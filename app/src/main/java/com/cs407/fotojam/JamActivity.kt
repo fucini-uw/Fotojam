@@ -151,9 +151,9 @@ class JamActivity : AppCompatActivity() {
             finish()
         }
 
-        this.runOnUiThread(Runnable {
-            Toast.makeText(this, "$jamId, $username", Toast.LENGTH_SHORT).show()
-        })
+        //this.runOnUiThread(Runnable {
+        //    Toast.makeText(this, "$jamId, $username", Toast.LENGTH_SHORT).show()
+        //})
 
     }
 
