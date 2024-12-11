@@ -61,7 +61,7 @@ class JoinJamActivity : AppCompatActivity() {
                         .addOnSuccessListener { dataSnapshot ->
                             if (dataSnapshot.exists()) {
                                 if (username != null) {
-                                    database.child("users").child(username).child("jams").child(joinCode).setValue("false")
+                                    database.child("users").child(username).child("jams").child(joinCode).setValue("00")
                                 }
                                 Toast.makeText(this@JoinJamActivity, "Jam joined!", Toast.LENGTH_SHORT).show()
                                 finish()
