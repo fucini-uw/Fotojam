@@ -97,6 +97,21 @@ class RatingActivity : AppCompatActivity() {
 
             Toast.makeText(this, "Ratings submitted successfully!", Toast.LENGTH_SHORT).show()
         }
+
+        val endJamButton = findViewById<Button>(R.id.button2)
+        endJamButton.setOnClickListener {
+            // Prepare intent to navigate to ResultsActivity
+            val resultsIntent = Intent(this, ResultsActivity::class.java)
+
+            // Pass relevant data to ResultsActivity
+            resultsIntent.putExtra("jamId", intent.getIntExtra("jamId", -1))
+            resultsIntent.putExtra("username", intent.getStringExtra("username"))
+            resultsIntent.putExtra("jamName", intent.getStringExtra("jamName"))
+            resultsIntent.putExtra("jamDescription", intent.getStringExtra("jamDescription"))
+
+            // Start the ResultsActivity
+            startActivity(resultsIntent)
+        }
     }
 
     private fun fetchImagesFromFirebase(onImagesFetched: (List<String>) -> Unit) {
@@ -122,6 +137,8 @@ class RatingActivity : AppCompatActivity() {
                 Log.e("FirebaseStorage", "Failed to list files: ${exception.message}")
             }
     }
+
+
 }
 
 //need onclicklistener for submit rating button, have in send the rating value to custom data and increment the
