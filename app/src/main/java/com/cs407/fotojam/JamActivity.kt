@@ -302,8 +302,11 @@ class JamActivity : AppCompatActivity() {
         val imageData = byteArrayOutputStream.toByteArray()
 
         // Get Firebase Storage reference
+        intent = getIntent();
+        val jamId = intent.getIntExtra("jamId", -1).toString()
+
         val storageRef: StorageReference = FirebaseStorage.getInstance().reference
-        val imageRef = storageRef.child("images/${photoFile.name}")
+        val imageRef = storageRef.child("${jamId}/${photoFile.name}")
 
         // Upload the image
         return@withContext try {
