@@ -184,17 +184,6 @@
     android:gravity="center"
     android:layout_marginTop="16dp">
 
-        <!-- View Gallery Button -->
-        <Button
-            android:id="@+id/btnViewGallery"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="8dp"
-            android:text="View Gallery"
-            android:backgroundTint="#6200EE"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
 
         <!-- Return Home Button -->
         <Button

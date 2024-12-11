@@ -1,6 +1,8 @@
 package com.cs407.fotojam
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +18,13 @@ class ResultsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_jam_results)
 
         fetchTopThreeImages()
+
+        val btnReturnHome = findViewById<Button>(R.id.btnReturnHome)
+        btnReturnHome.setOnClickListener {
+            // Navigate to HomeActivity
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun fetchTopThreeImages() {
