@@ -23,6 +23,8 @@ class RatingActivity : AppCompatActivity() {
     private lateinit var descriptionView: TextView
     private lateinit var imageUrls: List<String>
     private lateinit var database: DatabaseReference
+    private lateinit var username: String
+    private var isAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +48,11 @@ class RatingActivity : AppCompatActivity() {
         intent = getIntent()
 
         val id = intent.getIntExtra("jamId", -1)
-        val name = intent.getStringExtra("username")
+        username = intent.getStringExtra("username").toString()
         val jamName = intent.getStringExtra("jamName")
         val description = intent.getStringExtra("jamDescription")
 
-        val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
+        isAdmin = intent.getBooleanExtra("userIsAdmin", false)
 
         val adminText: TextView = findViewById(R.id.textView9)
         val adminButton: Button = findViewById(R.id.button2)
@@ -66,7 +68,7 @@ class RatingActivity : AppCompatActivity() {
         titleView.text = jamName
         descriptionView.text = "Submissions have ended. It's time to vote on which picture is best! The description for this jam was:\n\n" + description
         this.runOnUiThread(Runnable {
-            Toast.makeText(this, "$id, $name", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$id, $username", Toast.LENGTH_SHORT).show()
         })
 
         // Handle submit button click
@@ -134,13 +136,16 @@ class RatingActivity : AppCompatActivity() {
         }
 
         submitRatingsButton.setOnClickListener {
-            //TODO: Gather all ratings and submit them to the database and set phaseComplete to true
+            //TODO: Gather all ratings and submit them to the database
+            var state: String = "01"
+            if (isAdmin) { state = "11" }
+            database.child("users").child(username).child("jams").child(id.toString()).setValue(state)
             Toast.makeText(applicationContext, "Ratings submitted!", Toast.LENGTH_SHORT).show()
             finish()
         }
 
         endRatingsButton.setOnClickListener {
-            // TODO: set phaseComplete to false
+            database.child("users").child(username).child("jams").child(id.toString()).setValue("10")
             database.child("jams").child(id.toString()).child("phase").setValue(2)
             Toast.makeText(applicationContext, "Votes finalized!", Toast.LENGTH_SHORT).show()
             finish()

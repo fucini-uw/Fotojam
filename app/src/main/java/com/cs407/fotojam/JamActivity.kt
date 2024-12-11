@@ -51,6 +51,8 @@ class JamActivity : AppCompatActivity() {
     private lateinit var brightnessSeekBar: SeekBar
     private lateinit var saveButton: Button
     private lateinit var database: DatabaseReference
+    private lateinit var username: String
+    private var isAdmin: Boolean = false
 
     // For adding brightness
     private var multColor = -0x1
@@ -92,10 +94,10 @@ class JamActivity : AppCompatActivity() {
         intent = getIntent();
 
         jamId = intent.getIntExtra("jamId", -1)
-        val name = intent.getStringExtra("username")
+        username = intent.getStringExtra("username").toString()
         val jamName = intent.getStringExtra("jamName")
         val description = intent.getStringExtra("jamDescription")
-        val isAdmin = intent.getBooleanExtra("userIsAdmin", false)
+        isAdmin = intent.getBooleanExtra("userIsAdmin", false)
         val stageComplete = intent.getBooleanExtra("stageComplete", false)
 
         val adminText: TextView = findViewById(R.id.textView)
@@ -141,14 +143,15 @@ class JamActivity : AppCompatActivity() {
         })
 
         adminButton.setOnClickListener {
-            // TODO: set phaseComplete to false
+            // Set phaseComplete to false
+            database.child("users").child(username).child("jams").child(jamId.toString()).setValue("10")
             database.child("jams").child(jamId.toString()).child("phase").setValue(1)
             Toast.makeText(applicationContext, "Submissions closed!", Toast.LENGTH_SHORT).show()
             finish()
         }
 
         this.runOnUiThread(Runnable {
-            Toast.makeText(this, "$jamId, $name", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "$jamId, $username", Toast.LENGTH_SHORT).show()
         })
 
     }
@@ -254,7 +257,9 @@ class JamActivity : AppCompatActivity() {
                 if (success) {
                     // Show success message
                     //Toast.makeText(applicationContext, R.string.photo_saved, Toast.LENGTH_LONG).show()
-                    // TODO: set phaseComplete to true
+                    var state: String = "01"
+                    if (isAdmin) { state = "11" }
+                    database.child("users").child(username).child("jams").child(jamId.toString()).setValue(state)
                     Toast.makeText(applicationContext, "Photo submitted!", Toast.LENGTH_SHORT).show()
                 } else {
                     // Show error message

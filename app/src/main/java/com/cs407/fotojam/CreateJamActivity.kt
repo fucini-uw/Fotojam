@@ -61,14 +61,14 @@ class CreateJamActivity : AppCompatActivity() {
                     database.child("jams").child(joinCode).get()
                         .addOnSuccessListener { dataSnapshot ->
                             if (dataSnapshot.exists()) {
-                                Toast.makeText(this@CreateJamActivity, "jam code already being used", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@CreateJamActivity, "Jam code already being used!", Toast.LENGTH_SHORT).show()
                             }
                             else {
                                 database.child("jams").child(joinCode).child("title").setValue(jamTitle)
                                 database.child("jams").child(joinCode).child("description").setValue(jamDescription)
                                 database.child("jams").child(joinCode).child("phase").setValue(0)
                                 intent.getStringExtra("username")
-                                    ?.let { it1 -> database.child("users").child(it1).child("jams").child(joinCode).setValue("true")}
+                                    ?.let { it1 -> database.child("users").child(it1).child("jams").child(joinCode).setValue("10")}
                                 finish()
                                 Toast.makeText(this@CreateJamActivity, "Jam created!", Toast.LENGTH_SHORT).show()
                             }
