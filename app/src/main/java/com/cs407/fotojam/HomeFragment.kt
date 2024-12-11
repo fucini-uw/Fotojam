@@ -152,6 +152,21 @@ class HomeFragment(
                         findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
                         true
                     }
+                    R.id.action_refresh -> {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            list = mutableListOf() // Remove all local DB entries on each refresh (slow!)
+                            fetchFromDB() // Asynchronous
+                            adapter = FotojamListAdapter(list, username)
+                            val layoutManager = LinearLayoutManager(
+                                activity
+                            )
+                            layoutManager.orientation = LinearLayoutManager.VERTICAL
+                            recyclerView.setLayoutManager(layoutManager)
+                            recyclerView.adapter = adapter
+                            adapter.notifyDataSetChanged()
+                        }
+                        true
+                    }
                     else -> false
                 }
             }

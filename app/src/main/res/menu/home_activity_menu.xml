@@ -8,4 +8,9 @@
         android:icon="@drawable/logout_icon"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_refresh"
+        android:title="@string/refresh_menu_text"
+        app:showAsAction="never" />
+
 </menu>

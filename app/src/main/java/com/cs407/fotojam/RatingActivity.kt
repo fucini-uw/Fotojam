@@ -67,9 +67,9 @@ class RatingActivity : AppCompatActivity() {
 
         titleView.text = jamName
         descriptionView.text = "Submissions have ended. It's time to vote on which picture is best! The description for this jam was:\n\n" + description
-        this.runOnUiThread(Runnable {
-            Toast.makeText(this, "$id, $username", Toast.LENGTH_SHORT).show()
-        })
+        //this.runOnUiThread(Runnable {
+        //    Toast.makeText(this, "$id, $username", Toast.LENGTH_SHORT).show()
+        //})
 
         // Handle submit button click
         val submitButton = findViewById<Button>(R.id.submitRatingsButton)
@@ -105,6 +105,11 @@ class RatingActivity : AppCompatActivity() {
             }
 
             Toast.makeText(this, "Ratings submitted successfully!", Toast.LENGTH_SHORT).show()
+            var state: String = "011"
+            if (isAdmin) { state = "111" }
+            database.child("users").child(username).child("jams").child(id.toString()).setValue(state)
+            Toast.makeText(applicationContext, "Ratings submitted!", Toast.LENGTH_SHORT).show()
+            finish()
         }
 
         val endJamButton = findViewById<Button>(R.id.button2)
@@ -133,15 +138,6 @@ class RatingActivity : AppCompatActivity() {
             recyclerView.visibility = View.GONE
             descriptionView.text = "The description for this jam was:\n\n" + description
             adminText.text = "You've already sumbitted your ratings, but because you are the creator of this jam, you can still decide when to end voting and finalize the jam results."
-        }
-
-        submitRatingsButton.setOnClickListener {
-            //TODO: Gather all ratings and submit them to the database
-            var state: String = "011"
-            if (isAdmin) { state = "111" }
-            database.child("users").child(username).child("jams").child(id.toString()).setValue(state)
-            Toast.makeText(applicationContext, "Ratings submitted!", Toast.LENGTH_SHORT).show()
-            finish()
         }
 
         endRatingsButton.setOnClickListener {
