@@ -50,6 +50,7 @@
         android:ems="10"
         android:hint="Create Join Code"
         android:inputType="number"
+        android:maxLength="9"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
