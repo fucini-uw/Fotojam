@@ -27,6 +27,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -308,9 +309,18 @@ class JamActivity : AppCompatActivity() {
         val storageRef: StorageReference = FirebaseStorage.getInstance().reference
         val imageRef = storageRef.child("${jamId}/${photoFile.name}")
 
-        // Upload the image
+
+        val username = intent.getStringExtra("username")
+        // Create custom metadata
+        val metadata = StorageMetadata.Builder()
+            .setCustomMetadata("numRatings", "0")
+            .setCustomMetadata("totalStars", "0")
+            .setCustomMetadata("username", username)
+            .build()
+
+        // Upload the image with metadata
         return@withContext try {
-            imageRef.putBytes(imageData).await() // Use Kotlin Coroutines
+            imageRef.putBytes(imageData, metadata).await() // Use Kotlin Coroutines
             true
         } catch (e: Exception) {
             e.printStackTrace()
