@@ -14,12 +14,14 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageMetadata
 
 class RatingActivity : AppCompatActivity() {
 
     private lateinit var intent: Intent
     private lateinit var titleView: TextView
     private lateinit var descriptionView: TextView
+    private lateinit var imageUrls: List<String>
     private lateinit var database: DatabaseReference
     private lateinit var username: String
     private var isAdmin: Boolean = false
@@ -33,15 +35,17 @@ class RatingActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.pictureRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        fetchImagesFromFirebase { imageUrls ->
+        // Fetch images and pass them to the adapter
+        fetchImagesFromFirebase { fetchedImageUrls ->
+            imageUrls = fetchedImageUrls
             val adapter = PictureRatingAdapter(imageUrls) { position, rating ->
-                // Handle rating change
+                // handle rating change
                 println("Image at position $position rated $rating stars")
             }
             recyclerView.adapter = adapter
         }
 
-        intent = getIntent();
+        intent = getIntent()
 
         val id = intent.getIntExtra("jamId", -1)
         username = intent.getStringExtra("username").toString()
@@ -67,6 +71,57 @@ class RatingActivity : AppCompatActivity() {
             Toast.makeText(this, "$id, $username", Toast.LENGTH_SHORT).show()
         })
 
+        // Handle submit button click
+        val submitButton = findViewById<Button>(R.id.submitRatingsButton)
+        submitButton.setOnClickListener {
+            val ratings = (recyclerView.adapter as PictureRatingAdapter).getRatings()
+
+            ratings.forEach { (position, rating) ->
+                val pictureUrl = imageUrls[position]
+                val imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(pictureUrl)
+
+                imageRef.metadata.addOnSuccessListener { metadata ->
+                    val numRatings = metadata.getCustomMetadata("numRatings")?.toInt() ?: 0
+                    val totalStars = metadata.getCustomMetadata("totalStars")?.toInt() ?: 0
+
+                    val newNumRatings = numRatings + 1
+                    val newTotalStars = totalStars + rating.toInt()
+
+                    val updatedMetadata = StorageMetadata.Builder()
+                        .setCustomMetadata("numRatings", newNumRatings.toString())
+                        .setCustomMetadata("totalStars", newTotalStars.toString())
+                        .build()
+
+                    imageRef.updateMetadata(updatedMetadata)
+                        .addOnSuccessListener {
+                            Log.d("RatingActivity", "Updated metadata for image at $pictureUrl")
+                        }
+                        .addOnFailureListener {
+                            Log.e("RatingActivity", "Failed to update metadata for image at $pictureUrl", it)
+                        }
+                }.addOnFailureListener {
+                    Log.e("RatingActivity", "Failed to fetch metadata for image at $pictureUrl", it)
+                }
+            }
+
+            Toast.makeText(this, "Ratings submitted successfully!", Toast.LENGTH_SHORT).show()
+        }
+
+        val endJamButton = findViewById<Button>(R.id.button2)
+        endJamButton.setOnClickListener {
+            // Prepare intent to navigate to ResultsActivity
+            val resultsIntent = Intent(this, ResultsActivity::class.java)
+
+            // Pass relevant data to ResultsActivity
+            resultsIntent.putExtra("jamId", intent.getIntExtra("jamId", -1))
+            resultsIntent.putExtra("username", intent.getStringExtra("username"))
+            resultsIntent.putExtra("jamName", intent.getStringExtra("jamName"))
+            resultsIntent.putExtra("jamDescription", intent.getStringExtra("jamDescription"))
+
+            // Start the ResultsActivity
+            startActivity(resultsIntent)
+            finish()
+        }
         val submitRatingsButton: Button = findViewById(R.id.submitRatingsButton)
         val endRatingsButton: Button = findViewById(R.id.button2)
 
@@ -99,7 +154,10 @@ class RatingActivity : AppCompatActivity() {
     }
 
     private fun fetchImagesFromFirebase(onImagesFetched: (List<String>) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/")
+        intent = getIntent()
+
+        val jamId = intent.getIntExtra("jamId", -1).toString()
+        val storageRef = FirebaseStorage.getInstance().reference.child("${jamId}/")
         val imageUrls = mutableListOf<String>()
 
         storageRef.listAll()
@@ -110,14 +168,17 @@ class RatingActivity : AppCompatActivity() {
                     }
                 }
 
-                // Wait for all URLs to be fetched
                 tasks.last().addOnSuccessListener {
-                    onImagesFetched(imageUrls)
+                    onImagesFetched(imageUrls)  // Return the list of image URLs
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("FirebaseStorage", "Failed to list files: ${exception.message}")
             }
     }
+
+
 }
 
+//need onclicklistener for submit rating button, have in send the rating value to custom data and increment the
+//total ratings. In results activity, get the info and calculate the overall rating average
