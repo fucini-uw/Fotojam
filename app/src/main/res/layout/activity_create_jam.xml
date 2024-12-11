@@ -49,7 +49,7 @@
         android:background="@drawable/custom_edit_text"
         android:ems="10"
         android:hint="Create Join Code"
-        android:inputType="text"
+        android:inputType="number"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"

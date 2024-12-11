@@ -55,6 +55,9 @@ class CreateJamActivity : AppCompatActivity() {
             if (joinCode.isBlank() or jamTitle.isBlank()) {
                 Toast.makeText(this, "Title or code is blank", Toast.LENGTH_SHORT).show()
             }
+            else if (joinCode.toInt().toString() != joinCode || joinCode.toInt() >= Integer.MAX_VALUE) {
+                Toast.makeText(this, "invalid join code", Toast.LENGTH_LONG).show()
+            }
             else {
                 val scope = CoroutineScope(Dispatchers.IO)
                 scope.launch {
